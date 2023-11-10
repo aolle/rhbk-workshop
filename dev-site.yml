@@ -1,0 +1,26 @@
+runtime:
+  cache_dir: ./.cache/antora
+
+site:
+  title: Red Hat Build of Keycloak Workshop (Dev Mode)
+  url: http://localhost:8080/rhbk-workshop
+  start_page: rhbk-workshop::index.adoc
+
+content:
+  sources:
+    - url: .
+      branches: HEAD
+      start_path: documentation
+asciidoc:
+  attributes:
+    title: Red Hat Build of Keycloak Workshop (Dev Mode)
+  extensions:
+    - ./lib/remote-include-processor.js
+    - ./lib/tab-block.js
+ui:
+  bundle:
+    url: https://github.com/aolle/rhd-tutorial-ui/releases/download/v0.2.0/ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental-ui
+output:
+  dir: ./gh-pages

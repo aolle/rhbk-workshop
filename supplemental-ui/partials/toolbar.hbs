@@ -1,0 +1,9 @@
+<div class="toolbar" role="navigation">
+{{> nav-toggle}}
+  {{#with site.homeUrl}}
+  <a href="{{{relativize this}}}" class="home-link{{#if @root.page.home}} is-current{{/if}}"></a>
+  {{/with}}
+{{> breadcrumbs}}
+{{> page-versions}}
+  <div style="padding: 0 0.5rem 0 0.75rem;"><a href="https://olleb.com" target="_blank" rel="noopener noreferrer"> © 2023 - Àngel Ollé Blázquez</a></div>
+</div>

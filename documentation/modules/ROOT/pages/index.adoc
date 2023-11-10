@@ -1,0 +1,8 @@
+= Red Hat Build of Keycloak {rhbk-version} Workshop
+:page-layout: home
+:!sectids:
+
+[.text-center.strong]
+== Introduction
+
+Red Hat Build of Keycloak enables you to secure your web applications by providing Web SSO capabilities based on popular standards such as OpenID Connect, OAuth 2.0, and SAML 2.0.
