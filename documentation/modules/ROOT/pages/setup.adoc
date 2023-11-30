@@ -1,0 +1,82 @@
+= Environment Setup
+include::_attributes.adoc[]
+
+[NOTE,subs="attributes+,+macros"]
+====
+This tutorial was developed and tested with:
+
+* Red Hat OpenShift `{openshift-version}`
+* Red Hat build of Keycloak `{rhbk-version}`
+* FreeIPA `{freeipa-version}`
+====
+
+[#tools]
+== Workshop Tools
+
+The following tools are required to run the exercises in this tutorial. Please ensure that they are installed and properly configured before proceeding with any of the tutorial chapters.
+
+include::partial$tools.adoc[]
+
+NOTE: The extensions source code used during this workshop can be found at the following URL:
+https://github.com/aolle/rhbk-workshop/code
+
+[#deploy]
+== Deploying Red Hat build of Keycloak on OpenShift
+
+
+[#deploy-operator]
+=== Deploying Red Hat build of Keycloak on OpenShift using the Operator
+
+
+//image::setup/operatorhub.png[]
+
+
+//[#deploy-templates]
+//=== Deploying Red Hat build of Keycloak on OpenShift using the templates
+
+
+//[.lines_space]
+//[.console-input]
+//[source,bash, subs="+macros,+attributes"]
+//----
+//oc policy add-role-to-user view -z default -n sso
+//----
+
+
+[#deploy-ipa]
+== 1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift
+
+This section explains how to install FreeIPA, an Identity Management (IdM) solution that combines Linux, 389 Directory Server, MIT Kerberos, NTP, DNS and Dogtag.
+
+https://www.freeipa.org/page/About
+
+FreeIPA is the upstream version of Red Hat Identity Management.
+
+Later on, we will see how we can integrate Red Hat build of Keycloak with IdM/FreeIPA.
+
+To get started, stay logged in into your Red Hat OpenShift platform, and for convenience, select the `kc` project that has been created previously. Follow the steps below for deploying a FreeIPA instance on top of Red Hat OpenShift.
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+# export the image that we are going to deploy
+export IMG=quay.io/freeipa/freeipa-openshift-container:4.9.8
+export IMG_BASE=${IMG}
+
+# clone the repository and deploy the roles and scc
+# if preferred, a remote build could be performed instead of cloning the repository
+git clone https://github.com/freeipa/freeipa-openshift-container.git
+cd freeipa-openshift-container/
+kustomize build deploy/admin | oc create -f -
+
+# create the ocp template and deploy it
+make template-create
+make template-new-app
+----
+
+Write down the `IPA_ADMIN_PASSWORD` and `IPA_DM_PASSWORD` displayed on the terminal; we will need it later.
+
+Open the FreeIPA administration console to verify that the access and credentials are working properly.
+
+image::setup/freeIPAconsole.png[]
