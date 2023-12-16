@@ -2,6 +2,6 @@
 ** xref:setup.adoc#tools[1.1. Workshop Tools]
 ** xref:setup.adoc#deploy[1.2. Deploying Red Hat build of Keycloak on OpenShift]
 *** xref:setup.adoc#deploy-operator[1.2.1 Deploying Red Hat build of Keycloak on OpenShift using the Operator]
-//*** xref:setup.adoc#deploy-templates[1.2.2 Deploying Red Hat Single Sign-On for OpenShift using the templates]
+//*** xref:setup.adoc#deploy-templates[1.2.2 Deploying Red Hat build of Keycloak on OpenShift with GitOps ]
 ** xref:setup.adoc#deploy-ipa[1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift]
 
