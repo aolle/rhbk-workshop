@@ -23,9 +23,35 @@ https://github.com/aolle/rhbk-workshop/code
 [#deploy]
 == Deploying Red Hat build of Keycloak on OpenShift
 
-
 [#deploy-operator]
 === Deploying Red Hat build of Keycloak on OpenShift using the Operator
+
+* Open a browser window and log in to the Red Hat OpenShift Container Platform web console.
+
+* From the Administrator perspective, click `Operators`, then `OperatorHub`.
+
+* In the Filter by keyword field, type `rhbk`.
+
+image::setup/operatorhub-rhbk.png[]
+
+* Select the `Keycloak Operator` tile and click `Install`.
+
+image::setup/install-rhbk-operator.png[]
+
+* On the Install Operator page, leave `stable-v22` from the list of available `Update Channel` options. The Operator supports only the `A specific namespace on the cluster` as installation mode. Create the `rhbk` project. Choose `Automatic` update approval.
+
+image::setup/rhbk-operator-opts.png[]
+
+* Click `Install`.
+
+Once installed, the `Keycloak Operator` should appear in the list of installed operators, accessible from the `Operators` menu under `Installed Operators`.
+
+image::setup/rhbk-operator-installed.png[]
+
+In production mode, Keycloak requires specific prerequisites that we will proceed to install and configure.
+
+
+
 
 
 //image::setup/operatorhub.png[]
