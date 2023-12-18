@@ -299,6 +299,30 @@ The YAML file already includes the database&#8217;s <code>keycloak</code> userna
 </tr>
 </table>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy the Red Hat Build of Keycloak Instance:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc -n rhbk apply -f <a href="https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml" class="bare">https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml</a></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>After deploying and ensuring the Keycloak instance is running successfully, we can access the administration console. The default credentials are generated randomly during the deployment. To retrieve them, we need to check the generated secrets as follows:</p>
 </div>
@@ -338,30 +362,6 @@ In production environments, it is advisable to change the randomly generated def
 <div class="content">
 <img src="_images/setup/admin-console.png" alt="admin console">
 </div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Deploy the Red Hat Build of Keycloak Instance:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock lines_space console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc -n rhbk apply -f <a href="https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml" class="bare">https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml</a></code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
