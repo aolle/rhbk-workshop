@@ -74,6 +74,17 @@ oc -n rhbk create secret generic keycloak-db-secret \
 
 NOTE: The YAML file already includes the database's `keycloak` username and password, which is adequate for a workshop. In a production environment, it's essential to securely define these fields, and it's recommended to store them in a secret.
 
+* Deploy the Red Hat Build of Keycloak Instance:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc -n rhbk apply -f https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml
+----
+
+NOTE: For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
+
 After deploying and ensuring the Keycloak instance is running successfully, we can access the administration console. The default credentials are generated randomly during the deployment. To retrieve them, we need to check the generated secrets as follows:
 
 * Obtain the secrets and decode them.
@@ -130,19 +141,6 @@ image::setup/password-secret.png[]
 
 * Click `Create`.
 ////
-
-* Deploy the Red Hat Build of Keycloak Instance:
-
-[.lines_space]
-[.console-input]
-[source,bash, subs="+macros,+attributes"]
-----
-oc -n rhbk apply -f https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml
-----
-
-NOTE: For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
-
-
 
 ////
 image::setup/operatorhub.png[]
