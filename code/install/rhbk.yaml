@@ -1,0 +1,41 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: example-keycloak
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: postgres-db
+#    schema: keycloak
+    usernameSecret:
+      name: keycloak-db-secret
+      key: username
+    passwordSecret:
+      name: keycloak-db-secret
+      key: password
+  http:
+    httpEnabled: true
+  ingress:
+      className: openshift-default
+      enabled: true
+  hostname:
+      hostname: ""
+      strict: false
+
+---
+apiVersion: v1
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: example-keycloak-service
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+  to:
+    kind: Service
+    name: example-keycloak-service
+    weight: 100
+  port:
+    targetPort: http
+
