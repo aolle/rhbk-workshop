@@ -198,7 +198,171 @@ The extensions source code used during this workshop can be found at the followi
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="deploy-operator"><a class="anchor" href="#deploy-operator"></a>Deploying Red Hat build of Keycloak on OpenShift using the Operator</h3>
-
+<div class="ulist">
+<ul>
+<li>
+<p>Open a browser window and log in to the Red Hat OpenShift Container Platform web console.</p>
+</li>
+<li>
+<p>From the Administrator perspective, click <code>Operators</code>, then <code>OperatorHub</code>.</p>
+</li>
+<li>
+<p>In the Filter by keyword field, type <code>rhbk</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/setup/operatorhub-rhbk.png" alt="operatorhub rhbk">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Select the <code>Keycloak Operator</code> tile and click <code>Install</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/setup/install-rhbk-operator.png" alt="install rhbk operator">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>On the Install Operator page, leave <code>stable-v22</code> from the list of available <code>Update Channel</code> options. The Operator supports only the <code>A specific namespace on the cluster</code> as installation mode. Create the <code>rhbk</code> project. Choose <code>Automatic</code> update approval.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/setup/rhbk-operator-opts.png" alt="rhbk operator opts">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click <code>Install</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once installed, the <code>Keycloak Operator</code> should appear in the list of installed operators, accessible from the <code>Operators</code> menu under <code>Installed Operators</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/setup/rhbk-operator-installed.png" alt="rhbk operator installed">
+</div>
+</div>
+<div class="paragraph">
+<p>Keycloak requires specific prerequisites (unless it is initiated with <code>start-dev</code>) that we will proceed to install and configure.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s set up the database that Keycloak will rely on. In this workshop, we&#8217;ll opt for a PostgreSQL database installation.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy the database instance:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc -n rhbk apply -f <a href="https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/postgres.yaml" class="bare">https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/postgres.yaml</a></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create the secrets:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc -n rhbk create secret generic keycloak-db-secret \
+  --from-literal=username=keycloak \
+  --from-literal=password=keycloak</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The YAML file already includes the database&#8217;s <code>keycloak</code> username and password, which is adequate for a workshop. In a production environment, it&#8217;s essential to securely define these fields, and it&#8217;s recommended to store them in a secret.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After deploying and ensuring the Keycloak instance is running successfully, we can access the administration console. The default credentials are generated randomly during the deployment. To retrieve them, we need to check the generated secrets as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Obtain the secrets and decode them.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc -n rhbk get secret example-keycloak-initial-admin -o jsonpath='{.data.username}' | base64 --decode
+oc -n rhbk get secret example-keycloak-initial-admin -o jsonpath='{.data.password}' | base64 --decode</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In production environments, it is advisable to change the randomly generated default credentials and enable multi-factor verification for enhanced security.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Try accessing the administration console using the provided credentials.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/setup/admin-console.png" alt="admin console">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy the Red Hat Build of Keycloak Instance:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc -n rhbk apply -f <a href="https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml" class="bare">https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml</a></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
