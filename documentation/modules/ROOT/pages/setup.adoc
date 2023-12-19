@@ -183,7 +183,7 @@ export IMG_BASE=${IMG}
 # if preferred, a remote build could be performed instead of cloning the repository
 git clone https://github.com/freeipa/freeipa-openshift-container.git
 cd freeipa-openshift-container/
-kustomize build deploy/admin | oc create -f -
+kustomize build deploy/admin | oc -n rhbk create -f -
 
 # create the ocp template and deploy it
 make template-create
