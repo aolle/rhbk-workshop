@@ -23,25 +23,140 @@ https://github.com/aolle/rhbk-workshop/code
 [#deploy]
 == Deploying Red Hat build of Keycloak on OpenShift
 
-
 [#deploy-operator]
 === Deploying Red Hat build of Keycloak on OpenShift using the Operator
 
+* Open a browser window and log in to the Red Hat OpenShift Container Platform web console.
 
-//image::setup/operatorhub.png[]
+* From the Administrator perspective, click `Operators`, then `OperatorHub`.
+
+* In the Filter by keyword field, type `rhbk`.
+
+image::setup/operatorhub-rhbk.png[]
+
+* Select the `Keycloak Operator` tile and click `Install`.
+
+image::setup/install-rhbk-operator.png[]
+
+* On the Install Operator page, leave `stable-v22` from the list of available `Update Channel` options. The Operator supports only the `A specific namespace on the cluster` as installation mode. Create the `rhbk` project. Choose `Automatic` update approval.
+
+image::setup/rhbk-operator-opts.png[]
+
+* Click `Install`.
+
+Once installed, the `Keycloak Operator` should appear in the list of installed operators, accessible from the `Operators` menu under `Installed Operators`.
+
+image::setup/rhbk-operator-installed.png[]
+
+Keycloak requires specific prerequisites (unless it is initiated with `start-dev`) that we will proceed to install and configure.
+
+Let's set up the database that Keycloak will rely on. In this workshop, we'll opt for a PostgreSQL database installation.
+
+* Deploy the database instance:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc -n rhbk apply -f https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/postgres.yaml
+----
+
+* Create the secrets:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc -n rhbk create secret generic keycloak-db-secret \
+  --from-literal=username=keycloak \
+  --from-literal=password=keycloak
+----
+
+NOTE: The YAML file already includes the database's `keycloak` username and password, which is adequate for a workshop. In a production environment, it's essential to securely define these fields, and it's recommended to store them in a secret.
+
+* Deploy the Red Hat Build of Keycloak Instance:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc -n rhbk apply -f https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml
+----
+
+NOTE: For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
+
+After deploying and ensuring the Keycloak instance is running successfully, we can access the administration console. The default credentials are generated randomly during the deployment. To retrieve them, we need to check the generated secrets as follows:
+
+* Obtain the secrets and decode them.
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc -n rhbk get secret example-keycloak-initial-admin -o jsonpath='{.data.username}' | base64 --decode
+oc -n rhbk get secret example-keycloak-initial-admin -o jsonpath='{.data.password}' | base64 --decode
+----
+
+NOTE: In production environments, it is advisable to change the randomly generated default credentials and enable multi-factor verification for enhanced security.
+
+* Try accessing the administration console using the provided credentials.
+
+image::setup/admin-console.png[]
+
+////
+Create the TLS certificate and key:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+openssl req -subj '/CN=keycloak.example.com/O=Test Keycloak./C=ES' -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
+
+oc -n rhbk create secret tls example-tls-secret --cert certificate.pem --key key.pem
+----
+
+Now, we will deploy an instance of Keycloak using the operator. Follow the steps below:
+
+* From the Administrator perspective, click on `Operators`, then select `Installed Operators`. Make sure to select `rhbk` project. Select `Keycloak Operator`.
+
+image::setup/rhbk-operator.png[]
+
+* Click `Create instance` of the Keycloak tile.
+
+image::setup/create-instance.png[]
+
+* In the `http` section, specify the name of the secret created earlier in the `tlsSecret` field.
+
+image::setup/tls-secret-field.png[]
+
+* In the `hostname` section, specify the hostname of the certificate created earlier in the `hostname` field.
+
+* In the `db` section, specify the database key and name secret created earlier in the `usernameSecret` field.
+
+image::setup/username-secret.png[]
+
+* Do the same in the `passwordSecret` field.
+
+image::setup/password-secret.png[]
+
+* Click `Create`.
+////
+
+////
+image::setup/operatorhub.png[]
 
 
-//[#deploy-templates]
-//=== Deploying Red Hat build of Keycloak on OpenShift using the templates
+[#deploy-templates]
+=== Deploying Red Hat build of Keycloak on OpenShift using the templates
 
 
-//[.lines_space]
-//[.console-input]
-//[source,bash, subs="+macros,+attributes"]
-//----
-//oc policy add-role-to-user view -z default -n sso
-//----
-
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc policy add-role-to-user view -z default -n sso
+----
+////
 
 [#deploy-ipa]
 == 1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift
