@@ -61,8 +61,8 @@ The application uses an OpenID - JWT workflow to secure the application. In this
 |REALM|jwt-demo|KeyCloak realm|
 |CLIENT_ID|padel-user-backend|
 |CLIENT_SECRET|0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x|
-|UNAME|dborrego|
-|PASSWORD|dborrego|
+|UNAME|dborrego|User who gets the data|
+|PASSWORD|dborrego|User password|
 
 ```bash
 KCHOST=http://localhost:8080                               
