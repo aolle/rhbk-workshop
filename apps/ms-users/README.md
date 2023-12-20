@@ -93,7 +93,6 @@ ACCESS_TOKEN=`curl \
 Now, we can see the access token in a JWT format with ```echo $ACCESS_TOKEN``` but it's in base64 so the best way is to decode it:
 
 ```json
-...
   "realm_access": {
     "roles": [
       "padel-users-admin",
@@ -102,7 +101,6 @@ Now, we can see the access token in a JWT format with ```echo $ACCESS_TOKEN``` b
       "uma_authorization",
     ]
   },
-...
 ```
 
 Now we can to the different operations: 
