@@ -1,18 +1,20 @@
+// AppLayout.jsx
+import React from 'react';
 import { Outlet } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
-import UserProfile from "../UserProfile";
+import UserProfile from "../UserProfile"; // Asegúrate de que la ruta sea correcta
 
 const AppLayout = () => {
     return (
-        <Grid celled>
+        <Grid padded>
             <Grid.Row>
                 <Grid.Column width={16}>
-                    <UserProfile/>
+                    <UserProfile/>  
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column width={16}>
-                    <Outlet />
+                    <Outlet />  
                 </Grid.Column>
             </Grid.Row>
         </Grid>

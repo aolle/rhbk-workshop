@@ -164,7 +164,7 @@ const genders = [
             </Modal.Content>
         </Modal>
         
-        <Grid celled>
+        <Grid padded>
             <Grid.Row>
                 <Grid.Column width={10}>
                     <Table celled padded>
