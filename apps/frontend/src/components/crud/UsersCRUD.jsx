@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Form, Grid, Table, Icon, Modal } from 'semantic-ui-react'
+import { useAuth } from '../AuthContext';
 
 const UserCRUD = (config) => {
     const [error, setError] = useState(null);
@@ -9,12 +10,34 @@ const UserCRUD = (config) => {
     const [data, setData] = useState([]);
     const [item, setItem] = useState({});
 
+    const { token } = useAuth();
+
     const handleInputChange = (fieldName, value) => {
         setItem({
           ...item,
           [fieldName]: value
         });
       };
+    
+    const getAll = async () => {
+        try {
+            const response = await fetch(window.appConfig.BACKEND_USERS_URL + config.config.domain, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token, 
+                },
+            });
+            if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
+            const users = await response.json();
+            setIsLoaded(true);
+            setData(users);
+        } catch (error) {
+            setIsLoaded(true);
+            setError(error.message);
+            openErrorModal(error.message);
+        }
+    };
       
     const deleteUser = (id) => {
         const requestOptions = {
@@ -87,38 +110,16 @@ const UserCRUD = (config) => {
             });
     };
     
-
-const genders = [
-    { key: 'm', text: 'Masculino', value: 'Masculino' },
-    { key: 'f', text: 'Femenino', value: 'Femenino' },
-]
-
     const updateScreen = () => {
-        fetch(window.appConfig.BACKEND_USERS_URL+config.config.domain)  
-            .then(
-                (res) => {
-                    if(!res.ok) throw new Error(res.status)
-                    else return res.json()
-                }
-            ).then(
-                (result) => {
-                    setIsLoaded(true);
-                    setData(result);
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    openErrorModal(error.message);
-                }
-            )
+        getAll();
     }
 
     const clearForm = () => {
         setItem({
-            firstName: '',
-            lastName: '',
-            dni: '',
-            gender: '',
-            phone: ''
+            username: '',
+            name: '',
+            year: '',
+            level: ''
         });
     };
 
@@ -127,21 +128,17 @@ const genders = [
         updateScreen()
     }, [])
 
-    const dniRegex = /^\d{8}[a-zA-Z]$/;
-
     const columnHeaders = [
         "Acciones", 
-        "Nombre", 
-        "Apellido", 
-        "DNI/NIE",
-        "Sexo", 
-        "Num tfn"];
-
+        "Nombre de Usuario", 
+        "Nombre Completo", 
+        "Año de Nacimiento",
+        "Nivel"];
+        
     const openErrorModal = (message) => {
         setError(message);
         setModalOpen(true);
     
-        // Cierra la ventana modal automáticamente después de 5 segundos
         setTimeout(() => {
             setModalOpen(false);
             setError(null);
@@ -149,135 +146,65 @@ const genders = [
     };
 
     return (
-        <>
-        <Modal
-            open={modalOpen}
-            size="mini"
-            onClose={() => {
-                setModalOpen(false);
-                setError(null);
-            }}
-        >
-            <Modal.Header>Error</Modal.Header>
-            <Modal.Content>
-                <p>{error}</p>
-            </Modal.Content>
-        </Modal>
-        
-        <Grid padded>
-            <Grid.Row>
-                <Grid.Column width={10}>
-                    <Table celled padded>
-                        <Table.Header>
-                        <Table.Row>
-                            {columnHeaders.map((header, index) => (
-                                <Table.HeaderCell key={index}>{header}</Table.HeaderCell>
-                            ))}
-                        </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {
-                                isLoaded ? 
-                                    data.map((data)=> {
-                                        return (
-                                            <Table.Row key={data.id}>
-                                                <Table.Cell>
-                                                <Icon
-                                                    name="trash"
-                                                    color="red"
-                                                    link
-                                                    onClick={() => deleteUser(data.id)}
-                                                />
-                                                <Icon
-                                                    name="edit"
-                                                    color="blue"
-                                                    link
-                                                    onClick={() => editUser(data)}
-                                                />
-                                                </Table.Cell>
-                                                <Table.Cell>{data.firstName}</Table.Cell>
-                                                <Table.Cell>{data.lastName}</Table.Cell>
-                                                <Table.Cell>{data.dni}</Table.Cell>
-                                                <Table.Cell>{data.gender}</Table.Cell>
-                                                <Table.Cell>{data.phone}</Table.Cell>
-                                            </Table.Row>
-                                        )
-                                    }) : 
-                                    (
-                                        <Table.Row>
-                                            <Table.Cell></Table.Cell>
-                                            <Table.Cell></Table.Cell>
-                                            <Table.Cell></Table.Cell>
-                                            <Table.Cell></Table.Cell>
-                                            <Table.Cell></Table.Cell>
-                                            <Table.Cell></Table.Cell>
+            <>
+                <Modal open={modalOpen} size="mini" onClose={() => setModalOpen(false)}>
+                    <Modal.Header>Error</Modal.Header>
+                    <Modal.Content>
+                        <p>{error}</p>
+                    </Modal.Content>
+                </Modal>
+                
+                <Grid padded>
+                    <Grid.Row>
+                        <Grid.Column width={10}>
+                            <Table celled padded>
+                                <Table.Header>
+                                    <Table.Row>
+                                        {columnHeaders.map((header, index) => (
+                                            <Table.HeaderCell key={index}>{header}</Table.HeaderCell>
+                                        ))}
+                                    </Table.Row>
+                                </Table.Header>
+                                <Table.Body>
+                                    {isLoaded ? data.map((user) => (
+                                        <Table.Row key={user.id}>
+                                            <Table.Cell>
+                                                {/* Acciones para cada usuario */}
+                                                <Icon name="trash" color="red" link onClick={() => deleteUser(user.id)} />
+                                                <Icon name="edit" color="blue" link onClick={() => editUser(user)} />
+                                            </Table.Cell>
+                                            <Table.Cell>{user.username}</Table.Cell>
+                                            <Table.Cell>{user.name}</Table.Cell>
+                                            <Table.Cell>{user.year}</Table.Cell>
+                                            <Table.Cell>{user.level}</Table.Cell>
                                         </Table.Row>
-                                    )
-                            }
-                        </Table.Body>
-                    </Table>
-                </Grid.Column>
-                <Grid.Column width={6}>
-                    <Form onSubmit={createUser}>
-                        <Form.Input 
-                            icon='edit' iconPosition='left'
-                            label='Nombre' placeholder='Nombre'
-                            value={item.firstName}
-                            onChange={(e) => handleInputChange("firstName", e.target.value)} />
-                        <Form.Input 
-                            icon='edit' iconPosition='left'
-                            label='Apellidos' placeholder='Apellidos'
-                            value={item.lastName}
-                            onChange={(e) => handleInputChange("lastName", e.target.value)} />
-                        <Form.Input
-                            icon='id card'
-                            iconPosition='left'
-                            label='DNI/NIE'
-                            placeholder='DNI/NIE'
-                            value={item.dni}
-                            onChange={(e) => handleInputChange("dni", e.target.value)}
-                            error={
-                                item.dni && !item.dni.match(dniRegex) ? 
-                                { content: 'El DNI debe tener 8 números y una letra.', pointing: 'above' } 
-                                : null
-                            }
-                        />
-                        <Form.Select 
-                            options={genders}
-                            label='Sexo' placeholder='sexo'
-                            value={item.gender}
-                            onChange={(e, { value }) => handleInputChange("gender", value)} />
-                        <Form.Input 
-                            icon='phone' iconPosition='left'
-                            label='Número de teléfono' placeholder='Número de teléfono'
-                            value={item.phone}
-                            onChange={(e) => handleInputChange("phone", e.target.value)} />
-                        <Form.Group inline>
-                            {/* Botón para Guardar Cambios (visible en modo edición) */}
-                            {isEditing && (
-                                <Form.Button type="button" onClick={updateUser}>
-                                    Guardar Cambios
-                                </Form.Button>
-                            )}
-                            {/* Botón para Crear (visible en modo creación) */}
-                            {!isEditing && (
-                                <Form.Button type="button" onClick={createUser}>
-                                    Crear
-                                </Form.Button>
-                            )}
-                            {/* Botón para Limpiar (visible en modo edición) */}
-                            {isEditing && (
-                                <Form.Button type="button" onClick={clearForm}>
-                                    Limpiar
-                                </Form.Button>
-                            )}
-                        </Form.Group>
-                    </Form>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
-        </>
-    );
-}
+                                    )) : (
+                                        <Table.Row>
+                                            {/* Celdas vacías si no hay datos */}
+                                        </Table.Row>
+                                    )}
+                                </Table.Body>
+                            </Table>
+                        </Grid.Column>
+                        <Grid.Column width={6}>
+                            <Form onSubmit={isEditing ? updateUser : createUser}>
+                                {/* Campos del formulario */}
+                                <Form.Input label='Nombre de Usuario' placeholder='Nombre de Usuario' value={item.username || ''} onChange={(e) => handleInputChange("username", e.target.value)} />
+                                <Form.Input label='Nombre Completo' placeholder='Nombre Completo' value={item.name || ''} onChange={(e) => handleInputChange("name", e.target.value)} />
+                                <Form.Input label='Año de Nacimiento' placeholder='Año de Nacimiento' type="number" value={item.year || ''} onChange={(e) => handleInputChange("year", e.target.value)} />
+                                <Form.Input label='Nivel' placeholder='Nivel' type="number" value={item.level || ''} onChange={(e) => handleInputChange("level", e.target.value)} />
+                                
+                                <Form.Group inline>
+                                    {isEditing && <Form.Button type="button" onClick={updateUser}>Guardar Cambios</Form.Button>}
+                                    {!isEditing && <Form.Button type="button" onClick={createUser}>Crear</Form.Button>}
+                                    {isEditing && <Form.Button type="button" onClick={clearForm}>Limpiar</Form.Button>}
+                                </Form.Group>
+                            </Form>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </>
+        );
+    }
 
 export default UserCRUD;
