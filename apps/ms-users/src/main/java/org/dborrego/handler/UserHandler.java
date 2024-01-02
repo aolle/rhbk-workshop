@@ -1,8 +1,11 @@
 package org.dborrego.handler;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.dborrego.config.PaginationConfig;
 import org.dborrego.model.User;
+import org.jboss.resteasy.reactive.RestQuery;
 
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.logging.Log;
@@ -23,6 +26,9 @@ public class UserHandler {
   @Inject
   SecurityIdentity securityIdentity;
 
+  @Inject
+  PaginationConfig pagination;
+
   @POST
   @RolesAllowed({ "padel-users-admin" })
   public Uni<User> create(User user) {
@@ -31,8 +37,14 @@ public class UserHandler {
 
   @GET
   @RolesAllowed({ "padel-users-admin" })
-  public Uni<List<User>> listAll() {
-    return User.listAll();
+  public Uni<List<User>> listAll(
+      @RestQuery Integer page,
+      @RestQuery Integer size) {
+    return User
+        .findAll()
+        .page(Optional.ofNullable(page).orElse(pagination.page()),
+            Optional.ofNullable(size).orElse(pagination.size()))
+        .list();
   }
 
   @GET
