@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import Users from './pages/Users';
 import Blank from './components/layout/Blank';
-import Matches from './components/layout/Matches';
+import Matches from './components/matches/Matches';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 
 const App = () => (
