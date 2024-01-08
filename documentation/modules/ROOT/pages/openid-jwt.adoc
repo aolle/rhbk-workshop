@@ -1,0 +1,23 @@
+= OpenID + JWT
+include::_attributes.adoc[]
+
+[NOTE,subs="attributes+,+macros"]
+====
+This tutorial shows how to implement an OpenID Connect flow, with JWT implementation:
+
+* Red Hat OpenShift `{openshift-version}`
+* Red Hat build of Keycloak `{rhbk-version}`
+* FreeIPA `{freeipa-version}`
+====
+
+[#architecture]
+== Architecture
+
+[#rhbk]
+== RHBK configuration
+
+[#backend]
+== Backend
+
+[#frontend]
+== Frontend
