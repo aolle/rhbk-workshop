@@ -13,13 +13,128 @@ In this case, we'll develop a complete architecture with some microservices. We 
 
 The user backend microservice is developed with Quarkus, and we can see an easy integration between Keycloak and the application, thanks to its OpenID library. 
 
-image::openid-jwt/architecture.png[]
+image::openid/frontend-architecture-01.png[]
 
 [#rhbk]
 == RHBK configuration
+This section explains how to create a new realm with OpenID connect flow and how to configure it. 
+
+
 
 [#backend]
 == Backend
 
 [#frontend]
 == Frontend
+
+In this section, we want to create a new record in our system, but we have to configure some security points. 
+
+* Find the fronted URL:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc get route -A | grep frontend | awk '{print $3}'
+----
+
+When you enter the application you should see a message like this:
+
+image::openid/frontend-02.png[]
+
+This message indicates that you have not logged into the application. So we have to login into the application, to do that we need a user with enough roles to enter into the platform. 
+
+* Create the user
+
+# TODO hablar de que hay que ir a keycloak a crear el usuario
+image::openid/frontend-create-user-01.png[]
+
+# TODO comentar que para este ejemplo solo vamos a crear el usuario
+image::openid/frontend-create-user-02.png[]
+
+# TODO comentar que vamos a añadir al usuario una contraseña
+# Añadir un NOTE con que se puede poner cualquier contraseña
+image::openid/frontend-create-user-03.png[]
+
+* Login into the frontend application
+# Hablar de que al dar clic en login nos lleva a la pantalla de Kyecloak
+image::openid/frontend-login-01.png[]
+
+# Hablar que una vez logueado no vemos nada porque no tenemos roles
+image::openid/frontend-login-02.png[]
+
+* ReactJS configuration
+# Hablar de que este punto solo se muestra el funcionamiento
+
+[.lines_space]
+[.console-input]
+[source,javascript, subs="+macros,+attributes"]
+----
+  const isAdmin = roles.includes('padel-users-admin');
+  const isUser = roles.includes('padel-player'); 
+
+  if (isAdmin || isUser) {
+    return (
+      <Menu borderless>
+        {isAdmin && (
+          <Menu.Item as={Link} to="/users">
+            <Button color="blue" size="small">
+              <Icon name="users" /> Usuarios
+            </Button>
+          </Menu.Item>
+        )}
+        {isUser && (
+          <Menu.Item as={Link} to="/matches">
+            <Button color="blue" size="small">
+              <Icon name="soccer" /> Partidos
+            </Button>
+          </Menu.Item>
+        )}
+      </Menu>
+    );
+  } else {
+    return null; 
+  }
+----
+
+# TODO Comentar que se puede acceder a la url si la conocemos ```/users```
+
+image::openid/frontend-login-03.png[]
+
+* Add roles to the user
+# TODO Vamos a ir añadiendo roles al usuario
+image::openid/frontend-add-role-01.png[]
+
+# TODO explicar cómo añadir un nuevo role al usuario
+image::openid/frontend-add-role-02.png[]
+
+# TODO explicar cómo tras añadir el role ya vemos el listado de partidos
+image::openid/frontend-add-role-03.png[]
+
+* Add role admin to manage users
+
+# Explicar mismo proceso para añadir admin
+
+# Explicar cómo hay que añadir la cabecera para que el backend reciba la autenticación
+
+[.lines_space]
+[.console-input]
+[source,javascript, subs="+macros,+attributes"]
+----
+export const createUser = async (domain, userToken, userData) => {
+    const response = await fetch(`${BASE_URL}${domain}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`  
+        },
+        body: JSON.stringify(userData)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+};
+----
