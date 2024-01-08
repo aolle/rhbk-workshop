@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { Form, Grid, Table, Icon, Modal } from 'semantic-ui-react'
+import { Form, Grid, Table, Icon, Modal, Pagination } from 'semantic-ui-react'
 import { useAuth } from '../AuthContext';
+import { getAll, createUser } from './UserService'; 
 
 const UserCRUD = (config) => {
     const [error, setError] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10); 
     const [data, setData] = useState([]);
     const [item, setItem] = useState({});
 
@@ -19,19 +22,11 @@ const UserCRUD = (config) => {
         });
       };
     
-    const getAll = async () => {
+    const fetchUsers = async () => {
         try {
-            const response = await fetch(window.appConfig.BACKEND_USERS_URL + config.config.domain, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token, 
-                },
-            });
-            if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
-            const users = await response.json();
-            setIsLoaded(true);
+            const users = await getAll(config.config.domain, token, currentPage, pageSize);
             setData(users);
+            setIsLoaded(true);
         } catch (error) {
             setIsLoaded(true);
             setError(error.message);
@@ -87,31 +82,20 @@ const UserCRUD = (config) => {
     
     
 
-    const createUser = () => {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(item)
-        };
-    
-        fetch(window.appConfig.BACKEND_USERS_URL + config.config.domain, requestOptions)
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(res.status);
-                }
-                return res.json();
-            })
-            .then(() => {
-                updateScreen(); 
-            })
-            .catch((error) => {
-                openErrorModal(error.message);
-                console.error("Error:", error);
-            });
+    const handleCreateUser = async () => {
+        try {
+            await createUser(config.config.domain, token, item);
+            fetchUsers();
+        } catch (error) {
+            // Manejo de errores
+            setError(error.message);
+            openErrorModal(error.message);
+        }
     };
     
+    
     const updateScreen = () => {
-        getAll();
+        fetchUsers();
     }
 
     const clearForm = () => {
@@ -126,7 +110,7 @@ const UserCRUD = (config) => {
 
     useEffect(() => {
         updateScreen()
-    }, [])
+    }, [currentPage, pageSize]);
 
     const columnHeaders = [
         "Acciones", 
@@ -185,6 +169,11 @@ const UserCRUD = (config) => {
                                     )}
                                 </Table.Body>
                             </Table>
+                            <Pagination
+                                defaultActivePage={1}
+                                totalPages={Math.ceil(100 / pageSize)} 
+                                onPageChange={(e, { activePage }) => setCurrentPage(activePage - 1)}
+                            />
                         </Grid.Column>
                         <Grid.Column width={6}>
                             <Form onSubmit={isEditing ? updateUser : createUser}>
@@ -196,7 +185,7 @@ const UserCRUD = (config) => {
                                 
                                 <Form.Group inline>
                                     {isEditing && <Form.Button type="button" onClick={updateUser}>Guardar Cambios</Form.Button>}
-                                    {!isEditing && <Form.Button type="button" onClick={createUser}>Crear</Form.Button>}
+                                    {!isEditing && <Form.Button type="button" onClick={handleCreateUser}>Crear</Form.Button>}
                                     {isEditing && <Form.Button type="button" onClick={clearForm}>Limpiar</Form.Button>}
                                 </Form.Group>
                             </Form>
