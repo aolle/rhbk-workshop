@@ -7,6 +7,13 @@ We will configure a new Red Hat Build for Keycloak (RHBK) realm and configure it
 
 [#architecture]
 == Architecture
+Firstly, we need a RHBK instance. This instance controls the access across our applications. An advantage of OpenID Connect with JWT implementation is the easy way to connect different applications and frameworks, as each has libraries to facilitate that. 
+
+In this case, we'll develop a complete architecture with some microservices. We have one frontend, developed in ReactJS, which shows the data.
+
+The user backend microservice is developed with Quarkus, and we can see an easy integration between Keycloak and the application, thanks to its OpenID library. 
+
+image::openid-jwt/architecture.png[]
 
 [#rhbk]
 == RHBK configuration
