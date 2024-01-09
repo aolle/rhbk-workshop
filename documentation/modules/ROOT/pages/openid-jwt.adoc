@@ -11,7 +11,7 @@ Firstly, we need a RHBK instance. This instance controls the access across our a
 
 In this case, we'll develop a complete architecture with some microservices. We have one frontend, developed in ReactJS, which shows the data.
 
-The user backend microservice is developed with Quarkus, and we can see an easy integration between Keycloak and the application, thanks to its OpenID library. 
+The user backend microservice uses Quarkus, and we can see an easy integration between Keycloak and the application, thanks to its OpenID library. 
 
 image::openid/frontend-architecture-01.png[]
 
@@ -27,7 +27,7 @@ This section explains how to create a new realm with OpenID connect flow and how
 [#frontend]
 == Frontend
 
-In this section, we want to create a new record in our system, but we have to configure some security points. 
+In this section, we want to create a new record in our system, but we must configure some security points. 
 
 === Find the frontend URL
 
@@ -38,51 +38,51 @@ In this section, we want to create a new record in our system, but we have to co
 oc get route -A | grep frontend | awk '{print $3}'
 ----
 
-When you enter the application you should see a message like this:
+When you enter into the application, you should see a message like this:
 
 image::openid/frontend-02.png[]
 
-This message indicates that you have not logged into the application. So we have to login into the application, to do that we need a user with enough roles to enter into the platform. 
+This message indicates that you have not logged into the application. So we have to log in. We need a user with enough roles to enter into the platform. 
 
 === Create the user
 
-The first step for us is to create a new user to show all de configuration step by step.
+The first step for us is to create a new user to show all the configuration step by step.
 
-So, enter into the RHBK admin console, go to the "users" section and press the "add user" button.
+So, enter in the RHBK admin console, go to the "users" section and press the "add user" button.
 
 image::openid/frontend-create-user-01.png[]
 
-In the following screen, we can select some different properties about our new user. We are just going to set the name.
+In the following screen, we can select different properties about our new user. We are just going to set the name.
 
 image::openid/frontend-create-user-02.png[]
 
-Once the user has been created, we have to set a 
+Once the user is created, we have to set a 
 temporal or definitive credential to enter. 
 
 To do it, we go to the "Credentials" tab and press the "Set password" button.
 
 [NOTE,subs="attributes+,+macros"]
 ====
-For this example, you can use whatever password you want, but I recommend you to use an easy password as "reader". 
+For this example, you can use whatever password you want, but I recommend to use an easy password as "reader". 
 ====
 
 image::openid/frontend-create-user-03.png[]
 
 === Login into the frontend application
 
-Now, we have our user with a username and password, so we can return to the frontend URL and try to log in to the application.
+Now, we have our new user, so we can return to the frontend URL and try to log in to the application.
 
-If we click the green button, we should be redirected to the Keycloak login page. 
+If we click the green button, the application redirect us to Keycloak login page.
 
 image::openid/frontend-login-01.png[]
 
-Use your credentials, and you'll be redirected to the frontend page again, but now logged in.
+Use your login credentials, and you'll be taken to the front page, but you'll already be signed in.
 
 Now you should see the following button: 
 
 image::openid/frontend-login-02.png[]
 
-This means you're correctly logged in to the application, but you can't see anything for the ReactJS configuration. 
+It means you're correctly logged in to the application, but you can't see anything for the ReactJS configuration. 
 
 === ReactJS configuration
 
@@ -95,7 +95,7 @@ Keycloak gives us a library to integrate into any most popular frontend framewor
 
 We can see the code and inspect it. The variables ```isAdmin``` and ```isUser``` control the roles of the users. 
 
-The Menu component renders the application menu depending on the roles. So, if the user is an admin, it'll be able to see the "users" option, and if is a player, it can see the matches tab. 
+The Menu component renders the application menu depending on the roles. So, if the user is an admin, it'll be able to see the "users" option, and if it is a player, it can see the matches tab. 
 
 [.lines_space]
 [.console-input]
@@ -128,7 +128,7 @@ The Menu component renders the application menu depending on the roles. So, if t
   }
 ----
 
-As we're working with SPA page, the user may know the path to access, for example, to de admin user's page. This option is controlled by the Keycloak library too: 
+As we're working with the SPA page, the user may know the path to access, for example, the admin user's page. The Keycloak library controls this option too: 
 
 image::openid/frontend-login-03.png[]
 
@@ -138,29 +138,37 @@ At this point, we know how the ReactJS security model depends on the user roles 
 
 Now, we're going to add roles to the users to be able to do private actions. 
 
-The first step is to return to RHBK admin page and find the user ```reader```.
+The first step is to return to the RHBK admin page and find the user ```reader```.
 
 Once we have located the user, we find the tab "Role mapping". 
 
 image::openid/frontend-add-role-01.png[]
 
-After clicking the button "Assign role", RHBK shows a list of all available roles in the system.
+After clicking the button, "Assign role", RHBK shows a list of all available roles in the system.
 
 Select the role "padel-player" and click the "Assign" button.
 
 image::openid/frontend-add-role-02.png[]
 
-Now, you can return to the front page. It's mandatory to logout and login to refresh the JWT token. 
+Now, you can return to the front page. It's mandatory to log out and log in to refresh the JWT token. 
 
-After doing it, your user has the role assigned and the frontend shows him the "Matches" tab.
+After doing it, your user has the role assigned, and the front shows him the "Matches" tab.
 
 image::openid/frontend-add-role-03.png[]
 
 === Add role admin to manage users
 
-# Explicar mismo proceso para añadir admin
+Now, at this you should repeat the process to add a role to the user ```reader``` but, now: we're going to assign to him the role ```padel-users-admin```. After that, you should be able to see the main page like this: 
 
-# Explicar cómo hay que añadir la cabecera para que el backend reciba la autenticación
+image::openid/frontend-add-role-admin-01.png[]
+
+=== Call the backend service
+
+At this point, we know how to manage the security in backend and frontend applications following the OpenID and JWT approach. 
+
+We just need the last point: join the two applications. 
+
+To do that, we have to propagate the JWT user token to the backend. The backend gets it and depending on the role allows doing the operation or not. 
 
 [.lines_space]
 [.console-input]
