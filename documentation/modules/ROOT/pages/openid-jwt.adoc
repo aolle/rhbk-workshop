@@ -68,17 +68,34 @@ For this example, you can use whatever password you want, but I recommend you to
 
 image::openid/frontend-create-user-03.png[]
 
-* Login into the frontend application
+=== Login into the frontend application
 
-# Hablar de que al dar clic en login nos lleva a la pantalla de Kyecloak
+Now, we have our user with a username and password, so we can return to the frontend URL and try to log in to the application.
+
+If we click the green button, we should be redirected to the Keycloak login page. 
 
 image::openid/frontend-login-01.png[]
 
-# Hablar que una vez logueado no vemos nada porque no tenemos roles
+Use your credentials, and you'll be redirected to the frontend page again, but now logged in.
+
+Now you should see the following button: 
+
 image::openid/frontend-login-02.png[]
 
-* ReactJS configuration
-# Hablar de que este punto solo se muestra el funcionamiento
+This means you're correctly logged in to the application, but you can't see anything for the ReactJS configuration. 
+
+=== ReactJS configuration
+
+[IMPORTANT,subs="attributes+,+macros"]
+====
+This section shows Javascript code just to show how easy it is to configure a ReactJS application. 
+
+Keycloak gives us a library to integrate into any most popular frontend frameworks to work easily, in this case, I've used ```"keycloak-js": "^22.0.1",```
+====
+
+We can see the code and inspect it. The variables ```isAdmin``` and ```isUser``` control the roles of the users. 
+
+The Menu component renders the application menu depending on the roles. So, if the user is an admin, it'll be able to see the "users" option, and if is a player, it can see the matches tab. 
 
 [.lines_space]
 [.console-input]
@@ -111,11 +128,12 @@ image::openid/frontend-login-02.png[]
   }
 ----
 
-# TODO Comentar que se puede acceder a la url si la conocemos ```/users```
+As we're working with SPA page, the user may know the path to access, for example, to de admin user's page. This option is controlled by the Keycloak library too: 
 
 image::openid/frontend-login-03.png[]
 
-* Add roles to the user
+=== Add roles to the user
+
 # TODO Vamos a ir añadiendo roles al usuario
 image::openid/frontend-add-role-01.png[]
 
@@ -125,7 +143,7 @@ image::openid/frontend-add-role-02.png[]
 # TODO explicar cómo tras añadir el role ya vemos el listado de partidos
 image::openid/frontend-add-role-03.png[]
 
-* Add role admin to manage users
+=== Add role admin to manage users
 
 # Explicar mismo proceso para añadir admin
 
