@@ -29,7 +29,7 @@ This section explains how to create a new realm with OpenID connect flow and how
 
 In this section, we want to create a new record in our system, but we have to configure some security points. 
 
-* Find the fronted URL:
+=== Find the frontend URL
 
 [.lines_space]
 [.console-input]
@@ -44,20 +44,34 @@ image::openid/frontend-02.png[]
 
 This message indicates that you have not logged into the application. So we have to login into the application, to do that we need a user with enough roles to enter into the platform. 
 
-* Create the user
+=== Create the user
 
-# TODO hablar de que hay que ir a keycloak a crear el usuario
+The first step for us is to create a new user to show all de configuration step by step.
+
+So, enter into the RHBK admin console, go to the "users" section and press the "add user" button.
+
 image::openid/frontend-create-user-01.png[]
 
-# TODO comentar que para este ejemplo solo vamos a crear el usuario
+In the following screen, we can select some different properties about our new user. We are just going to set the name.
+
 image::openid/frontend-create-user-02.png[]
 
-# TODO comentar que vamos a añadir al usuario una contraseña
-# Añadir un NOTE con que se puede poner cualquier contraseña
+Once the user has been created, we have to set a 
+temporal or definitive credential to enter. 
+
+To do it, we go to the "Credentials" tab and press the "Set password" button.
+
+[NOTE,subs="attributes+,+macros"]
+====
+For this example, you can use whatever password you want, but I recommend you to use an easy password as "reader". 
+====
+
 image::openid/frontend-create-user-03.png[]
 
 * Login into the frontend application
+
 # Hablar de que al dar clic en login nos lleva a la pantalla de Kyecloak
+
 image::openid/frontend-login-01.png[]
 
 # Hablar que una vez logueado no vemos nada porque no tenemos roles
