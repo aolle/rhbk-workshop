@@ -134,13 +134,26 @@ image::openid/frontend-login-03.png[]
 
 === Add roles to the user
 
-# TODO Vamos a ir añadiendo roles al usuario
+At this point, we know how the ReactJS security model depends on the user roles in the JWT token. 
+
+Now, we're going to add roles to the users to be able to do private actions. 
+
+The first step is to return to RHBK admin page and find the user ```reader```.
+
+Once we have located the user, we find the tab "Role mapping". 
+
 image::openid/frontend-add-role-01.png[]
 
-# TODO explicar cómo añadir un nuevo role al usuario
+After clicking the button "Assign role", RHBK shows a list of all available roles in the system.
+
+Select the role "padel-player" and click the "Assign" button.
+
 image::openid/frontend-add-role-02.png[]
 
-# TODO explicar cómo tras añadir el role ya vemos el listado de partidos
+Now, you can return to the front page. It's mandatory to logout and login to refresh the JWT token. 
+
+After doing it, your user has the role assigned and the frontend shows him the "Matches" tab.
+
 image::openid/frontend-add-role-03.png[]
 
 === Add role admin to manage users
