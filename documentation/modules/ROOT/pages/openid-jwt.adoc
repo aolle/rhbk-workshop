@@ -19,10 +19,61 @@ image::openid/frontend-architecture-01.png[]
 == RHBK configuration
 This section explains how to create a new realm with OpenID connect flow and how to configure it. 
 
-
-
 [#backend]
 == Backend
+
+In this section, we'll see how to configure and secure a backend service. In this case, we're using Quarkus to develop the application.
+
+The application is a backend service to store a list of users of a sports center.  
+
+=== Find the backend URL
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+oc get route -A | grep ms-users | awk '{print $3}'
+----
+
+This URL belongs to the backend service and it'll be the point which the frontend service consumes. 
+
+=== Quarkus configuration
+
+Quarkus simplifies the security configuration in our backend services. 
+
+We just need to import the corresponding library, in this case, we're working with RHBK but indeed, it's an OpenID connect protocol, so we'll use the ```quarkus-oidc``` library.
+
+[.lines_space]
+[.console-input]
+[source,xml, subs="+macros,+attributes"]
+----
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+----
+
+At this point, we only have to configure some properties to indicate where and how use the OIDC server:
+
+[.lines_space]
+[.console-input]
+[source,xml, subs="+macros,+attributes"]
+----
+quarkus.oidc.auth-server-url=http://localhost:8080/realms/jwt-demo
+quarkus.oidc.client-id=padel-user-backend
+quarkus.oidc.credentials.secret=0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x
+----
+
+[WARNING,subs="attributes+,+macros"]
+====
+The client secret is the password that uses our application, it's very important to provision it securely. 
+====
+
+Now, we can secure our backend application endpoints. 
+
+=== Secure the application
+
+=== CRUD operations
 
 [#frontend]
 == Frontend
