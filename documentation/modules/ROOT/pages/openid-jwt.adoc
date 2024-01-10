@@ -37,6 +37,8 @@ oc get route -A | grep ms-users | awk '{print $3}'
 
 This URL belongs to the backend service and it'll be the point which the frontend service consumes. 
 
+=== RHBK configuration
+
 === Quarkus configuration
 
 Quarkus simplifies the security configuration in our backend services. 
@@ -53,11 +55,11 @@ We just need to import the corresponding library, in this case, we're working wi
     </dependency>
 ----
 
-At this point, we only have to configure some properties to indicate where and how use the OIDC server:
+At this point, we only have to configure some properties to indicate where and how to use the OIDC server:
 
 [.lines_space]
 [.console-input]
-[source,xml, subs="+macros,+attributes"]
+[source,properties, subs="+macros,+attributes"]
 ----
 quarkus.oidc.auth-server-url=http://localhost:8080/realms/jwt-demo
 quarkus.oidc.client-id=padel-user-backend
@@ -73,7 +75,128 @@ Now, we can secure our backend application endpoints.
 
 === Secure the application
 
+Another advantage of using Quarkus is the facility of use. We can secure the application endpoint just with annotations. 
+
+To secure the applications in a thick or fine grain, the main difference is to indicate the user roles using ```@RolesAllowed({  })``` or not with ```@Authenticated``` in the controllers.
+
+The authentication, authorization and roles of the client, are managed automatically by Quarkus. 
+
 === CRUD operations
+
+CRUD represents all the basic REST operations that you can do over a domain: create, read, update and delete. 
+
+Depending on the operation, we need more security or not. In this case, we will see the securitization for the main options. 
+
+==== How to get an access token
+
+In this workshop, we'll use the curl bash client to test the rest applications. If you prefer something more visual, you can avoid doing this request, read this part and jump to the frontend section. 
+
+[NOTE,subs="bash,+macros"]
+====
+In this workshop, we'll use the curl bash client to test the rest applications. If you prefer something more visual, you can avoid doing this request, read this part and jump to the frontend section. 
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+KCHOST=http://localhost:8080                               
+REALM=jwt-demo                                   
+CLIENT_ID=padel-user-backend
+CLIENT_SECRET=0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x
+UNAME=dborrego                                                 
+PASSWORD=dborrego
+----
+====
+
+In each petition, you have to put the access token, you can ask for one the following way: 
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+ACCESS_TOKEN=`curl \
+  -d "client_id=$CLIENT_ID" \
+  -d "client_secret=$CLIENT_SECRET" \
+  -d "username=$UNAME" \
+  -d "password=$PASSWORD" \
+  -d "grant_type=password" \
+  "$KCHOST/realms/$REALM/protocol/openid-connect/token"  | jq -r '.access_token'`
+----
+
+==== Create
+
+The operation of creating a new element into the domain is a restricted operation that only should be done by an admin. So we have a special role for admins, this role is ```padel-users-admin```
+
+To avoid the connection and return 403 to any user without permission, our code looks like this:
+
+[.lines_space]
+[.console-input]
+[source,java, subs="+macros,+attributes"]
+----
+  @POST
+  @RolesAllowed({ "padel-users-admin" })
+  public Uni<User> create(User user) {
+    return Panache.withTransaction(user::persist);
+  }
+----
+
+To test the creation of a user, you can use the following command: 
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+curl \
+  -X POST \
+  -H 'Authorization: Bearer '$ACCESS_TOKEN \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"David", "year": 1988, "level": 3.12, "username":"dborrego"}' \
+  localhost:8081/users
+{"id":1,"username":"dborrego","name":"David","year":1988,"level":3.12}
+----
+
+==== Find
+
+In this example, we allow any user to find his user, so we need some filters. 
+
+The first, control we need, is to check if the user is logged in with the correct role to enter the application. 
+
+The second one is that the user, once the application checks that it can read users, needs to check that it's just getting his user, it can't retrieve another one. A good example of that is a bank application, you can retrieve your account information, but not another one. 
+
+The last check involves getting some information from the token and taking it to the database query. 
+
+[.lines_space]
+[.console-input]
+[source,java, subs="+macros,+attributes"]
+----
+  @GET
+  @Path("/{id}")
+  @RolesAllowed({ "padel-users-player" })
+  public Uni<User> ListById(Long id) {
+    final String username = securityIdentity.getPrincipal().getName();
+    Log.info(String.format("User %s find user with id %d", username, id));
+    return User.<User>findById(id)
+        .onItem()
+        .ifNotNull()
+        .transform(user -> {
+          if (!username.equals(user.username)) {
+            throw new WebApplicationException("El nombre del usuario no coincide", Response.Status.FORBIDDEN);
+          }
+          return user;
+        });
+  }
+----
+
+Now, you can try to get your user:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+curl \
+  -H 'Authorization: Bearer '$ACCESS_TOKEN \
+  localhost:8081/users/1
+{"id":1,"username":"dborrego","name":"David","year":1988,"level":3.12}
+----
 
 [#frontend]
 == Frontend
