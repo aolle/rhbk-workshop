@@ -19,6 +19,14 @@ image::openid/frontend-architecture-01.png[]
 == RHBK configuration
 This section explains how to create a new realm with OpenID connect flow and how to configure it. 
 
+=== Create a realm
+
+=== Create a client
+
+==== Standard flow
+
+==== Implicit flow
+
 [#backend]
 == Backend
 
@@ -38,6 +46,14 @@ oc get route -A | grep ms-users | awk '{print $3}'
 This URL belongs to the backend service and it'll be the point which the frontend service consumes. 
 
 === RHBK configuration
+
+The Keycloak instance contains a realm configured, with a specific client for this workshop. 
+
+This application is a backend service that uses a standard flow with a private client. In the following section, you can see all the configurations needed by the application.
+
+If you want to see the OpenID Connect client configuration and explore the RHBK admin console, you can surf the following section.
+
+image::openid/backend-rhbk-config-01.png[]
 
 === Quarkus configuration
 
