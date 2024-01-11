@@ -254,7 +254,7 @@ This message indicates that you have not logged into the application. So we have
 
 The first step for us is to create a new user to show all the configuration step by step.
 
-So, enter in the RHBK admin console, go to the "users" section and press the "add user" button.
+So, enter the RHBK admin console, go to the "users" section and press the "add user" button.
 
 image::openid/frontend-create-user-01.png[]
 
@@ -269,7 +269,7 @@ To do it, we go to the "Credentials" tab and press the "Set password" button.
 
 [NOTE,subs="attributes+,+macros"]
 ====
-For this example, you can use whatever password you want, but I recommend to use an easy password as "reader". 
+For this example, you can use whatever password you want, but I recommend using an easy password as "reader". 
 ====
 
 image::openid/frontend-create-user-03.png[]
@@ -278,7 +278,7 @@ image::openid/frontend-create-user-03.png[]
 
 Now, we have our new user, so we can return to the frontend URL and try to log in to the application.
 
-If we click the green button, the application redirect us to Keycloak login page.
+If we click the green button, the application redirects us to the Keycloak login page.
 
 image::openid/frontend-login-01.png[]
 
