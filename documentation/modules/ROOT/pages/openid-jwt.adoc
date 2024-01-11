@@ -21,11 +21,27 @@ This section explains how to create a new realm with OpenID connect flow and how
 
 === Create a realm
 
+A realm is a domain in RHBK where we can configure clients, users, roles, etc. In this example, we provide an import with the configuration to run this workshop.
+
+However, we're creating one to see all the processes:
+
+image::openid/rhbk-create-realm-01.png[]
+
 === Create a client
 
-==== Standard flow
+A client is a RHBK consumer. We're using an OpenID Connect flow, but we can find some different types depending if we're using a private client or a public client. 
 
-==== Implicit flow
+To register a new client, we have to surf the Keycloak console admin into the client options. In this section, we find an option called "Create client". 
+
+image::openid/rhbk-create-client-01.png[]
+
+The following step depends on the flow that we can. In this workshop, we're going to use the standard flow for backend applications and the Implicit flow for the frontend application.
+
+image::openid/rhbk-create-client-02.png[]
+
+The last step indicates some security configuration parameters such as web origins, redirect URL after correct login, etc.
+
+image::openid/rhbk-create-client-03.png[]
 
 [#backend]
 == Backend
