@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenID + JWT :: Red Hat Build of Keycloak Workshop</title>
+    <link rel="canonical" href="https://olleb.com/rhbk-workshop/openid-jwt.html">
+    <link rel="prev" href="setup.html">
+    <meta name="generator" content="Antora 3.0.3">
+    <link rel="stylesheet" href="./_/css/site.css">
+<link rel="icon" href="./_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="./_/img/RHDLogo.svg" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://olleb.com/rhbk-workshop">Red Hat Build of Keycloak Workshop</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kafka-tutorial/" target="_blank">Kafka</a>
+            <a class="navbar-item" href="https://devsecops-workshop.github.io/" target="_blank">DevSecOps</a>
+            <a class="navbar-item" href="https://acidonper.github.io/redhat-workshop-cicd-gitops/redhat-workshop-cicd-gitops/" target="_blank">CI/CD & GitOps</a>
+            <a class="navbar-item" href="https://atarazana.github.io/gramola-gitops-guide/gramola-gitops-guide/" target="_blank">Gramola GitOps Guide</a>
+            <a class="navbar-item" href="https://luisarizmendi.github.io/tutorial-secure-onboarding/" target="_blank">Secure Edge device onboarding with RHEL and FDO</a>
+            <a class="navbar-item" href="https://xbryan1.github.io/rhte-2023-acm-docs/" target="_blank">Multicluster Application Deployment with Advanced Cluster Management and GitOps</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/java-inner-loop-dev-guide/java-inner-loop-dev-guide/index.html" target="_blank">Java Inner Loop Dev Guide</a>
+            <a class="navbar-item" href="https://atarazana.github.io/kitchensink-guide/" target="_blank">Deploying JBoss EAP applications on OpenShift</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ROOT" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="setup.html">1. Environment Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setup.html#tools">1.1. Workshop Tools</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="setup.html#deploy">1.2. Deploying Red Hat build of Keycloak on OpenShift</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="setup.html#deploy-operator">1.2.1 Deploying Red Hat build of Keycloak on OpenShift using the Operator</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setup.html#deploy-ipa">1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="openid-jwt.html">2. OpenID Connect + JWT</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="openid-jwt.html">2.1. Architecture</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="openid-jwt.html">2.2. RHBK Configuration</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="openid-jwt.html">2.3. Backend</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="openid-jwt.html">2.4. Frontend</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Red Hat Build of Keycloak Workshop</a></li>
+    <li><a href="openid-jwt.html">2. OpenID Connect + JWT</a></li>
+  </ul>
+</nav>
+  <div style="padding: 0 0.5rem 0 0.75rem;"><a href="https://olleb.com" target="_blank" rel="noopener noreferrer"> 2024 - Àngel Ollé Blázquez / David Borrego Gutiérrez</a></div>
+</div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">OpenID + JWT</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial shows how to implement an OpenID Connect flow with a JWT implementation.</p>
+</div>
+<div class="paragraph">
+<p>We will configure a new Red Hat Build for Keycloak (RHBK) realm and configure it. After that, we will still deploy the stack and configure the user&#8217;s access to allow roles for different operations.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="architecture"><a class="anchor" href="#architecture"></a>Architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Firstly, we need a RHBK instance. This instance controls the access across our applications. An advantage of OpenID Connect with JWT implementation is the easy way to connect different applications and frameworks, as each has libraries to facilitate that.</p>
+</div>
+<div class="paragraph">
+<p>In this case, we&#8217;ll develop a complete architecture with some microservices. We have one frontend, developed in ReactJS, which shows the data.</p>
+</div>
+<div class="paragraph">
+<p>The user backend microservice uses Quarkus, and we can see an easy integration between Keycloak and the application, thanks to its OpenID library.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-architecture-01.png" alt="frontend architecture 01">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rhbk"><a class="anchor" href="#rhbk"></a>RHBK configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section explains how to create a new realm with OpenID connect flow and how to configure it.</p>
+</div>
+<div class="sect2">
+<h3 id="_create_a_realm"><a class="anchor" href="#_create_a_realm"></a>Create a realm</h3>
+<div class="paragraph">
+<p>A realm is a domain in RHBK where we can configure clients, users, roles, etc. In this example, we provide an import with the configuration to run this workshop.</p>
+</div>
+<div class="paragraph">
+<p>However, we&#8217;re creating one to see all the processes:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/rhbk-create-realm-01.png" alt="rhbk create realm 01">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_client"><a class="anchor" href="#_create_a_client"></a>Create a client</h3>
+<div class="paragraph">
+<p>A client is a RHBK consumer. We&#8217;re using an OpenID Connect flow, so depending on whether we are configuring a private or public client, we must select a standard or implicit flow.</p>
+</div>
+<div class="paragraph">
+<p>To register a new client, go to the Keycloak console admin into the client options. In this section, find the option called "Create client".</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/rhbk-create-client-01.png" alt="rhbk create client 01">
+</div>
+</div>
+<div class="paragraph">
+<p>The following step depends on the flow that we can. In this workshop, we will use the standard flow for backend applications and the implicit flow for the frontend application.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/rhbk-create-client-02.png" alt="rhbk create client 02">
+</div>
+</div>
+<div class="paragraph">
+<p>The last step indicates a few security configuration parameters such as web origins, redirect URL after a correct login, etc.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/rhbk-create-client-03.png" alt="rhbk create client 03">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="backend"><a class="anchor" href="#backend"></a>Backend</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, we will configure and secure a backend service. In this case, we are using Quarkus to develop the application.</p>
+</div>
+<div class="paragraph">
+<p>The application is a backend service to store a list of users of a sports centre.</p>
+</div>
+<div class="sect2">
+<h3 id="_find_the_backend_url"><a class="anchor" href="#_find_the_backend_url"></a>Find the backend URL</h3>
+<div class="paragraph">
+<p>The front-end application consumes a back-end application. We need to know this URL:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route -A | grep ms-users | awk '{print $3}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rhbk_configuration"><a class="anchor" href="#_rhbk_configuration"></a>RHBK configuration</h3>
+<div class="paragraph">
+<p>The Keycloak instance contains a configured realm with a specific client for this workshop.</p>
+</div>
+<div class="paragraph">
+<p>This application is a backend service that uses a standard flow with a private client. In the following section, you can see all the configurations needed.</p>
+</div>
+<div class="paragraph">
+<p>If you wish to see the OpenID Connect client configuration and explore the RHBK admin console, you can navigate along the following section.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/backend-rhbk-config-01.png" alt="backend rhbk config 01">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_quarkus_configuration"><a class="anchor" href="#_quarkus_configuration"></a>Quarkus configuration</h3>
+<div class="paragraph">
+<p>Quarkus simplifies the security configuration in our backend services.</p>
+</div>
+<div class="paragraph">
+<p>We need to import the corresponding library. In this case, we&#8217;re working with RHBK, but indeed, it&#8217;s an OpenID connect protocol, so we&#8217;ll use the <code><code>quarkus-oidc</code></code> generic library.</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">    &lt;dependency&gt;
+      &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+      &lt;artifactId&gt;quarkus-oidc&lt;/artifactId&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At this point, we only have to configure some properties to indicate where and how to use the OIDC server:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">quarkus.oidc.auth-server-url=http://localhost:8080/realms/jwt-demo
+quarkus.oidc.client-id=padel-user-backend
+quarkus.oidc.credentials.secret=0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The client secret is the password that uses the client application. It&#8217;s critical to provision it securely.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now, we can secure our backend application endpoints.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_secure_the_application"><a class="anchor" href="#_secure_the_application"></a>Secure the application</h3>
+<div class="paragraph">
+<p>Another advantage of using Quarkus is the facility of use. We can secure the application endpoint just with annotations.</p>
+</div>
+<div class="paragraph">
+<p>To secure the applications, we have two options: generic or in a fine-grain way. The main difference between both is to indicate the user roles using <code><code>@RolesAllowed({  })</code></code> or not with <code><code>@Authenticated</code></code> in the application controllers.</p>
+</div>
+<div class="paragraph">
+<p>The client&#8217;s authentication, authorization and roles are managed automatically by Quarkus.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_crud_operations"><a class="anchor" href="#_crud_operations"></a>CRUD operations</h3>
+<div class="paragraph">
+<p>CRUD represents all the basic REST operations you can do over a domain: create, read, update and delete.</p>
+</div>
+<div class="paragraph">
+<p>Depending on the operation, we need more security or not. In this case, we will see the securitization for the main options.</p>
+</div>
+<div class="sect3">
+<h4 id="_how_to_get_an_access_token"><a class="anchor" href="#_how_to_get_an_access_token"></a>How to get an access token</h4>
+<div class="paragraph">
+<p>We will use the curl bash client to test the rest of the application endpoints. If you prefer something more visual, you can avoid doing this section and jump directly to the front-end application section.</p>
+</div>
+<div class="paragraph">
+<p>To get an access token, we need to configure some parameters that RHBK ask for.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">KCHOST=http://localhost:8080
+REALM=jwt-demo
+CLIENT_ID=padel-user-backend
+CLIENT_SECRET=0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x
+UNAME=dborrego
+PASSWORD=dborrego</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In each petition, you have to put the access token. You can request for one the following way:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ACCESS_TOKEN=`curl \
+  -d "client_id=$CLIENT_ID" \
+  -d "client_secret=$CLIENT_SECRET" \
+  -d "username=$UNAME" \
+  -d "password=$PASSWORD" \
+  -d "grant_type=password" \
+  "$KCHOST/realms/$REALM/protocol/openid-connect/token"  | jq -r '.access_token'`</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create"><a class="anchor" href="#_create"></a>Create</h4>
+<div class="paragraph">
+<p>Creating a new element into the domain is a restricted operation that just should be done by an admin. We have a specific role for admins: <code><code>padel-users-admin</code></code></p>
+</div>
+<div class="paragraph">
+<p>The application has to avoid the connection and return 403 to any user without enough permission:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">  @POST
+  @RolesAllowed({ "padel-users-admin" })
+  public Uni&lt;User&gt; create(User user) {
+    return Panache.withTransaction(user::persist);
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To test the creation of a user, you can use the following command:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
+  -X POST \
+  -H 'Authorization: Bearer '$ACCESS_TOKEN \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"David", "year": 1988, "level": 3.12, "username":"dborrego"}' \
+  localhost:8081/users
+{"id":1,"username":"dborrego","name":"David","year":1988,"level":3.12}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_find"><a class="anchor" href="#_find"></a>Find</h4>
+<div class="paragraph">
+<p>We allow any user to find himself, so we need some filters.</p>
+</div>
+<div class="paragraph">
+<p>The first control we need is to check if the user is logged in with the correct role to enter the application.</p>
+</div>
+<div class="paragraph">
+<p>The second one is that the application checks it&#8217;s just trying to get its user. Nobody can retrieve another user who is not himself. A good example is a bank application where you can get your account information, but not another one.</p>
+</div>
+<div class="paragraph">
+<p>The last check involves getting information from the token and taking it to the database query.</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">  @GET
+  @Path("/{id}")
+  @RolesAllowed({ "padel-users-player" })
+  public Uni&lt;User&gt; ListById(Long id) {
+    final String username = securityIdentity.getPrincipal().getName();
+    Log.info(String.format("User %s find user with id %d", username, id));
+    return User.&lt;User&gt;findById(id)
+        .onItem()
+        .ifNotNull()
+        .transform(user -&gt; {
+          if (!username.equals(user.username)) {
+            throw new WebApplicationException("El nombre del usuario no coincide", Response.Status.FORBIDDEN);
+          }
+          return user;
+        });
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, you can try to get your user:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
+  -H 'Authorization: Bearer '$ACCESS_TOKEN \
+  localhost:8081/users/1
+{"id":1,"username":"dborrego","name":"David","year":1988,"level":3.12}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="frontend"><a class="anchor" href="#frontend"></a>Frontend</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section, we want to create a new record in our system, but we must configure some security points.</p>
+</div>
+<div class="sect2">
+<h3 id="_find_the_front_end_application_url"><a class="anchor" href="#_find_the_front_end_application_url"></a>Find the front-end application URL</h3>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route -A | grep frontend | awk '{print $3}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When you enter into the application, you should see a message like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-02.png" alt="frontend 02">
+</div>
+</div>
+<div class="paragraph">
+<p>This message indicates that you have not logged into the application. So we have to log in. We need a user with enough roles to enter into the platform.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_the_user"><a class="anchor" href="#_create_the_user"></a>Create the user</h3>
+<div class="paragraph">
+<p>The first step for us is to create a new user to show all the configuration step by step.</p>
+</div>
+<div class="paragraph">
+<p>So, enter the RHBK admin console, go to the "users" section and press the "add user" button.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-create-user-01.png" alt="frontend create user 01">
+</div>
+</div>
+<div class="paragraph">
+<p>In the following screen, we can select different properties about our new user. We are just going to set the name.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-create-user-02.png" alt="frontend create user 02">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the user is created, we have to set a
+temporal or definitive credential to enter.</p>
+</div>
+<div class="paragraph">
+<p>To do it, we go to the "Credentials" tab and press the "Set password" button.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For this example, you can use whatever password you want, but I recommend using an easy password as "reader".</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-create-user-03.png" alt="frontend create user 03">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_login_into_the_frontend_application"><a class="anchor" href="#_login_into_the_frontend_application"></a>Login into the frontend application</h3>
+<div class="paragraph">
+<p>Now, we have our new user, so we can return to the frontend URL and try to log in to the application.</p>
+</div>
+<div class="paragraph">
+<p>Click the green button and the application will redirect you to the Keycloak login page.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-login-01.png" alt="frontend login 01">
+</div>
+</div>
+<div class="paragraph">
+<p>Once you log in, you will be redirected to the main page, already signed in.</p>
+</div>
+<div class="paragraph">
+<p>Now you should see the following button:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-login-02.png" alt="frontend login 02">
+</div>
+</div>
+<div class="paragraph">
+<p>It means you are correctly logged in to the application. You can&#8217;t see anything thanks to the ReactJS configuration.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reactjs_configuration"><a class="anchor" href="#_reactjs_configuration"></a>ReactJS configuration</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This section shows Javascript code to show how easy it is to configure a ReactJS application.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak gives us a library to integrate into any popular frontend framework to work easily. In this case, I&#8217;ve used <code><code>"keycloak-js": "^22.0.1",</code></code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We can see the code and inspect it. The variables <code><code>isAdmin</code></code> and <code><code>isUser</code></code> control the roles of the users.</p>
+</div>
+<div class="paragraph">
+<p>The Menu component renders the application menu depending on the roles. So, if the user is an admin, it&#8217;ll be able to see the "users" option, and if it is a player, it can see the matches tab.</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">  const isAdmin = roles.includes('padel-users-admin');
+  const isUser = roles.includes('padel-player');
+
+  if (isAdmin || isUser) {
+    return (
+      &lt;Menu borderless&gt;
+        {isAdmin &amp;&amp; (
+          &lt;Menu.Item as={Link} to="/users"&gt;
+            &lt;Button color="blue" size="small"&gt;
+              &lt;Icon name="users" /&gt; Usuarios
+            &lt;/Button&gt;
+          &lt;/Menu.Item&gt;
+        )}
+        {isUser &amp;&amp; (
+          &lt;Menu.Item as={Link} to="/matches"&gt;
+            &lt;Button color="blue" size="small"&gt;
+              &lt;Icon name="soccer" /&gt; Partidos
+            &lt;/Button&gt;
+          &lt;/Menu.Item&gt;
+        )}
+      &lt;/Menu&gt;
+    );
+  } else {
+    return null;
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As we&#8217;re working with the SPA page, the user may know the path to access, for example, the admin user&#8217;s page. The Keycloak library controls this option too:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-login-03.png" alt="frontend login 03">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_add_roles_to_the_user"><a class="anchor" href="#_add_roles_to_the_user"></a>Add roles to the user</h3>
+<div class="paragraph">
+<p>At this point, we know how the ReactJS security model depends on the user roles in the JWT token.</p>
+</div>
+<div class="paragraph">
+<p>Now, we&#8217;re going to add roles to the users to be able to do private actions.</p>
+</div>
+<div class="paragraph">
+<p>The first step is to return to the RHBK admin page and find the user <code><code>reader</code></code>.</p>
+</div>
+<div class="paragraph">
+<p>Once we have located the user, we find the "Role mapping" tab.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-add-role-01.png" alt="frontend add role 01">
+</div>
+</div>
+<div class="paragraph">
+<p>After clicking the "Assign role" button, RHBK shows a list of all available roles in the system.</p>
+</div>
+<div class="paragraph">
+<p>Select the role "padel-player" and click the "Assign" button.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-add-role-02.png" alt="frontend add role 02">
+</div>
+</div>
+<div class="paragraph">
+<p>Now, you can return to the front page. It&#8217;s mandatory to log out and log in to refresh the JWT token.</p>
+</div>
+<div class="paragraph">
+<p>After doing it, your user has the role assigned, and the front shows him the "Matches" tab.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-add-role-03.png" alt="frontend add role 03">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_add_role_admin_to_manage_users"><a class="anchor" href="#_add_role_admin_to_manage_users"></a>Add role admin to manage users</h3>
+<div class="paragraph">
+<p>Now, you should repeat the process to add a role to the user <code><code>reader</code></code>. Currently, we assign the role <code><code>padel-users-admin</code></code> to the user. After that, you should be able to see the main page like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openid/frontend-add-role-admin-01.png" alt="frontend add role admin 01">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_call_the_backend_service"><a class="anchor" href="#_call_the_backend_service"></a>Call the backend service</h3>
+<div class="paragraph">
+<p>Now, we know how to manage the security in both applications following the OpenID and JWT approach.</p>
+</div>
+<div class="paragraph">
+<p>We need the last point: join the two applications.</p>
+</div>
+<div class="paragraph">
+<p>We have to propagate the JWT user token to the back-end application. It gets the token, and depending on the role, it allows doing the operation or not.</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">export const createUser = async (domain, userToken, userData) =&gt; {
+    const response = await fetch(`${BASE_URL}${domain}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`
+        },
+        body: JSON.stringify(userData)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+};</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="setup.html">1. Environment Setup</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="./_/js/vendor/clipboard.js"></script>
+<script src="./_/js/site.js"></script>
+<script async src="./_/js/vendor/highlight.js"></script>
+  </body>
+</html>
