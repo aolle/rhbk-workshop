@@ -29,28 +29,29 @@ image::openid/rhbk-create-realm-01.png[]
 
 === Create a client
 
-A client is a RHBK consumer. We're using an OpenID Connect flow, but we can find some different types depending if we're using a private client or a public client. 
+A client is a RHBK consumer. We're using an OpenID Connect flow, so depending on whether we are configuring a private or public client, we must select a standard or implicit flow. 
 
-To register a new client, we have to surf the Keycloak console admin into the client options. In this section, we find an option called "Create client". 
+To register a new client, go to the Keycloak console admin into the client options. In this section, find the option called "Create client". 
 
 image::openid/rhbk-create-client-01.png[]
 
-The following step depends on the flow that we can. In this workshop, we're going to use the standard flow for backend applications and the Implicit flow for the frontend application.
+The following step depends on the flow that we can. In this workshop, we will use the standard flow for backend applications and the implicit flow for the frontend application.
 
 image::openid/rhbk-create-client-02.png[]
 
-The last step indicates some security configuration parameters such as web origins, redirect URL after correct login, etc.
+The last step indicates a few security configuration parameters such as web origins, redirect URL after a correct login, etc.
 
 image::openid/rhbk-create-client-03.png[]
 
 [#backend]
 == Backend
 
-In this section, we'll see how to configure and secure a backend service. In this case, we're using Quarkus to develop the application.
+Now, we will configure and secure a backend service. In this case, we are using Quarkus to develop the application.
 
-The application is a backend service to store a list of users of a sports center.  
+The application is a backend service to store a list of users of a sports centre.  
 
 === Find the backend URL
+The front-end application consumes a back-end application. We need to know this URL:
 
 [.lines_space]
 [.console-input]
@@ -59,15 +60,13 @@ The application is a backend service to store a list of users of a sports center
 oc get route -A | grep ms-users | awk '{print $3}'
 ----
 
-This URL belongs to the backend service and it'll be the point which the frontend service consumes. 
-
 === RHBK configuration
 
-The Keycloak instance contains a realm configured, with a specific client for this workshop. 
+The Keycloak instance contains a configured realm with a specific client for this workshop. 
 
-This application is a backend service that uses a standard flow with a private client. In the following section, you can see all the configurations needed by the application.
+This application is a backend service that uses a standard flow with a private client. In the following section, you can see all the configurations needed.
 
-If you want to see the OpenID Connect client configuration and explore the RHBK admin console, you can surf the following section.
+If you wish to see the OpenID Connect client configuration and explore the RHBK admin console, you can navigate along the following section.
 
 image::openid/backend-rhbk-config-01.png[]
 
@@ -75,7 +74,7 @@ image::openid/backend-rhbk-config-01.png[]
 
 Quarkus simplifies the security configuration in our backend services. 
 
-We just need to import the corresponding library, in this case, we're working with RHBK but indeed, it's an OpenID connect protocol, so we'll use the ```quarkus-oidc``` library.
+We need to import the corresponding library. In this case, we're working with RHBK, but indeed, it's an OpenID connect protocol, so we'll use the ```quarkus-oidc``` generic library.
 
 [.lines_space]
 [.console-input]
@@ -100,7 +99,7 @@ quarkus.oidc.credentials.secret=0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x
 
 [WARNING,subs="attributes+,+macros"]
 ====
-The client secret is the password that uses our application, it's very important to provision it securely. 
+The client secret is the password that uses the client application. It's critical to provision it securely.
 ====
 
 Now, we can secure our backend application endpoints. 
@@ -109,23 +108,24 @@ Now, we can secure our backend application endpoints.
 
 Another advantage of using Quarkus is the facility of use. We can secure the application endpoint just with annotations. 
 
-To secure the applications in a thick or fine grain, the main difference is to indicate the user roles using ```@RolesAllowed({  })``` or not with ```@Authenticated``` in the controllers.
+To secure the applications, we have two options: generic or in a fine-grain way. The main difference between both is to indicate the user roles using ```@RolesAllowed({  })``` or not with ```@Authenticated``` in the application controllers.
 
-The authentication, authorization and roles of the client, are managed automatically by Quarkus. 
+The client's authentication, authorization and roles are managed automatically by Quarkus. 
 
 === CRUD operations
 
-CRUD represents all the basic REST operations that you can do over a domain: create, read, update and delete. 
+CRUD represents all the basic REST operations you can do over a domain: create, read, update and delete. 
 
 Depending on the operation, we need more security or not. In this case, we will see the securitization for the main options. 
 
 ==== How to get an access token
 
-In this workshop, we'll use the curl bash client to test the rest applications. If you prefer something more visual, you can avoid doing this request, read this part and jump to the frontend section. 
+We will use the curl bash client to test the rest of the application endpoints. If you prefer something more visual, you can avoid doing this section and jump directly to the front-end application section. 
+
+To get an access token, we need to configure some parameters that RHBK ask for. 
 
 [NOTE,subs="bash,+macros"]
 ====
-In this workshop, we'll use the curl bash client to test the rest applications. If you prefer something more visual, you can avoid doing this request, read this part and jump to the frontend section. 
 [.lines_space]
 [.console-input]
 [source,bash, subs="+macros,+attributes"]
@@ -139,7 +139,7 @@ PASSWORD=dborrego
 ----
 ====
 
-In each petition, you have to put the access token, you can ask for one the following way: 
+In each petition, you have to put the access token. You can request for one the following way: 
 
 [.lines_space]
 [.console-input]
@@ -156,9 +156,9 @@ ACCESS_TOKEN=`curl \
 
 ==== Create
 
-The operation of creating a new element into the domain is a restricted operation that only should be done by an admin. So we have a special role for admins, this role is ```padel-users-admin```
+Creating a new element into the domain is a restricted operation that just should be done by an admin. We have a specific role for admins: ```padel-users-admin```
 
-To avoid the connection and return 403 to any user without permission, our code looks like this:
+The application has to avoid the connection and return 403 to any user without enough permission:
 
 [.lines_space]
 [.console-input]
@@ -188,13 +188,13 @@ curl \
 
 ==== Find
 
-In this example, we allow any user to find his user, so we need some filters. 
+We allow any user to find himself, so we need some filters. 
 
-The first, control we need, is to check if the user is logged in with the correct role to enter the application. 
+The first control we need is to check if the user is logged in with the correct role to enter the application. 
 
-The second one is that the user, once the application checks that it can read users, needs to check that it's just getting his user, it can't retrieve another one. A good example of that is a bank application, you can retrieve your account information, but not another one. 
+The second one is that the application checks it's just trying to get its user. Nobody can retrieve another user who is not himself. A good example is a bank application where you can get your account information, but not another one. 
 
-The last check involves getting some information from the token and taking it to the database query. 
+The last check involves getting information from the token and taking it to the database query. 
 
 [.lines_space]
 [.console-input]
@@ -235,7 +235,7 @@ curl \
 
 In this section, we want to create a new record in our system, but we must configure some security points. 
 
-=== Find the frontend URL
+=== Find the front-end application URL
 
 [.lines_space]
 [.console-input]
@@ -278,25 +278,25 @@ image::openid/frontend-create-user-03.png[]
 
 Now, we have our new user, so we can return to the frontend URL and try to log in to the application.
 
-If we click the green button, the application redirects us to the Keycloak login page.
+Click the green button and the application will redirect you to the Keycloak login page.
 
 image::openid/frontend-login-01.png[]
 
-Use your login credentials, and you'll be taken to the front page, but you'll already be signed in.
+Once you log in, you will be redirected to the main page, already signed in.
 
 Now you should see the following button: 
 
 image::openid/frontend-login-02.png[]
 
-It means you're correctly logged in to the application, but you can't see anything for the ReactJS configuration. 
+It means you are correctly logged in to the application. You can't see anything thanks to the ReactJS configuration. 
 
 === ReactJS configuration
 
 [IMPORTANT,subs="attributes+,+macros"]
 ====
-This section shows Javascript code just to show how easy it is to configure a ReactJS application. 
+This section shows Javascript code to show how easy it is to configure a ReactJS application. 
 
-Keycloak gives us a library to integrate into any most popular frontend frameworks to work easily, in this case, I've used ```"keycloak-js": "^22.0.1",```
+Keycloak gives us a library to integrate into any popular frontend framework to work easily. In this case, I've used ```"keycloak-js": "^22.0.1",```
 ====
 
 We can see the code and inspect it. The variables ```isAdmin``` and ```isUser``` control the roles of the users. 
@@ -346,11 +346,11 @@ Now, we're going to add roles to the users to be able to do private actions.
 
 The first step is to return to the RHBK admin page and find the user ```reader```.
 
-Once we have located the user, we find the tab "Role mapping". 
+Once we have located the user, we find the "Role mapping" tab. 
 
 image::openid/frontend-add-role-01.png[]
 
-After clicking the button, "Assign role", RHBK shows a list of all available roles in the system.
+After clicking the "Assign role" button, RHBK shows a list of all available roles in the system.
 
 Select the role "padel-player" and click the "Assign" button.
 
@@ -364,17 +364,17 @@ image::openid/frontend-add-role-03.png[]
 
 === Add role admin to manage users
 
-Now, at this you should repeat the process to add a role to the user ```reader``` but, now: we're going to assign to him the role ```padel-users-admin```. After that, you should be able to see the main page like this: 
+Now, you should repeat the process to add a role to the user ```reader```. Currently, we assign the role ```padel-users-admin``` to the user. After that, you should be able to see the main page like this: 
 
 image::openid/frontend-add-role-admin-01.png[]
 
 === Call the backend service
 
-At this point, we know how to manage the security in backend and frontend applications following the OpenID and JWT approach. 
+Now, we know how to manage the security in both applications following the OpenID and JWT approach. 
 
-We just need the last point: join the two applications. 
+We need the last point: join the two applications. 
 
-To do that, we have to propagate the JWT user token to the backend. The backend gets it and depending on the role allows doing the operation or not. 
+We have to propagate the JWT user token to the back-end application. It gets the token, and depending on the role, it allows doing the operation or not. 
 
 [.lines_space]
 [.console-input]
