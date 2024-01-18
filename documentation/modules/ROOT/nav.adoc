@@ -5,8 +5,7 @@
 //*** xref:setup.adoc#deploy-templates[1.2.2 Deploying Red Hat build of Keycloak on OpenShift with GitOps ]
 ** xref:setup.adoc#deploy-ipa[1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift]
 * xref:openid-jwt.adoc[2. OpenID Connect + JWT]
-** xref:openid-jwt.adoc[2.1. Architecture]
-** xref:openid-jwt.adoc[2.2. RHBK Configuration]
-** xref:openid-jwt.adoc[2.3. Backend]
-** xref:openid-jwt.adoc[2.4. Frontend]
-
+** xref:openid-jwt.adoc#architecture[2.1. Architecture]
+** xref:openid-jwt.adoc#rhbk[2.2. RHBK Configuration]
+** xref:openid-jwt.adoc#backend[2.3. Backend]
+** xref:openid-jwt.adoc#frontend[2.4. Frontend]
