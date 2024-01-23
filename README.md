@@ -1,10 +1,4 @@
 # Red Hat Build of Keycloak Workshop
-
-
 ---
-Workshop URL:
-
-https://olleb.com/rhbk-workshop
-
----
-Àngel Ollé Blázquez
+[Àngel Ollé Blázquez](https://www.linkedin.com/in/angelolle/)
+[David Borrego Gutiérrez](https://www.linkedin.com/in/david-borrego-guti%C3%A9rrez-868a2466/)
