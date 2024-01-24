@@ -112,7 +112,9 @@
     <li><a href="openid-jwt.html">2. OpenID Connect + JWT</a></li>
   </ul>
 </nav>
-  <div style="padding: 0 0.5rem 0 0.75rem;"><a href="https://olleb.com" target="_blank" rel="noopener noreferrer"> 2024 - Àngel Ollé Blázquez / David Borrego Gutiérrez</a></div>
+  <div style="padding: 0 0.5rem 0 0.75rem;">
+    © 2024 - <a href="https://www.linkedin.com/in/angelolle/" target="_blank">Àngel Ollé Blázquez</a> | <a href="https://www.linkedin.com/in/david-borrego-guti%C3%A9rrez-868a2466/" target="_blank">David Borrego Gutiérrez</a>
+  </div>
 </div>
   <div class="content">
 <article class="doc">
@@ -120,10 +122,10 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This tutorial shows how to implement an OpenID Connect flow with a JWT implementation.</p>
+<p>This tutorial demonstrates how to implement an OpenID Connect flow with a JWT implementation.</p>
 </div>
 <div class="paragraph">
-<p>We will configure a new Red Hat Build for Keycloak (RHBK) realm and configure it. After that, we will still deploy the stack and configure the user&#8217;s access to allow roles for different operations.</p>
+<p>We will set up a new realm in Red Hat Build for Keycloak (RHBK) and configure it. Subsequently, we will deploy the stack and configure user access, enabling roles for various operations.</p>
 </div>
 </div>
 </div>
@@ -131,13 +133,13 @@
 <h2 id="architecture"><a class="anchor" href="#architecture"></a>Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Firstly, we need a RHBK instance. This instance controls the access across our applications. An advantage of OpenID Connect with JWT implementation is the easy way to connect different applications and frameworks, as each has libraries to facilitate that.</p>
+<p>Firstly, we require an instance of RHBK to manage access across our applications. One advantage of implementing OpenID Connect with JWT is the seamless integration of various applications and frameworks, facilitated by libraries available for each.</p>
 </div>
 <div class="paragraph">
-<p>In this case, we&#8217;ll develop a complete architecture with some microservices. We have one frontend, developed in ReactJS, which shows the data.</p>
+<p>In this instance, we will construct a comprehensive architecture involving several microservices. The frontend is developed in ReactJS, responsible for displaying the data.</p>
 </div>
 <div class="paragraph">
-<p>The user backend microservice uses Quarkus, and we can see an easy integration between Keycloak and the application, thanks to its OpenID library.</p>
+<p>The user backend microservice, built with Quarkus, showcases a straightforward integration between Keycloak and the application, thanks to its OpenID library.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -150,15 +152,12 @@
 <h2 id="rhbk"><a class="anchor" href="#rhbk"></a>RHBK configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section explains how to create a new realm with OpenID connect flow and how to configure it.</p>
+<p>This section outlines the process of creating a new realm using the OpenID Connect flow and provides guidance on its configuration.</p>
 </div>
 <div class="sect2">
 <h3 id="_create_a_realm"><a class="anchor" href="#_create_a_realm"></a>Create a realm</h3>
 <div class="paragraph">
-<p>A realm is a domain in RHBK where we can configure clients, users, roles, etc. In this example, we provide an import with the configuration to run this workshop.</p>
-</div>
-<div class="paragraph">
-<p>However, we&#8217;re creating one to see all the processes:</p>
+<p>A realm in RHBK functions as a domain where clients, users, roles, etc., can be configured. In this example, we offer an import containing the configuration to execute this workshop. Nevertheless, we are creating one from scratch to illustrate all the processes:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -169,10 +168,10 @@
 <div class="sect2">
 <h3 id="_create_a_client"><a class="anchor" href="#_create_a_client"></a>Create a client</h3>
 <div class="paragraph">
-<p>A client is a RHBK consumer. We&#8217;re using an OpenID Connect flow, so depending on whether we are configuring a private or public client, we must select a standard or implicit flow.</p>
+<p>A client in RHBK serves as a consumer. Since we are employing an OpenID Connect flow, the selection of a standard or implicit flow depends on whether we are configuring a private or public client.</p>
 </div>
 <div class="paragraph">
-<p>To register a new client, go to the Keycloak console admin into the client options. In this section, find the option called "Create client".</p>
+<p>To register a new client, navigate to the Keycloak admin console and access the client options. In this section, locate the "Create client" option.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -180,7 +179,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>The following step depends on the flow that we can. In this workshop, we will use the standard flow for backend applications and the implicit flow for the frontend application.</p>
+<p>The next step depends on the flow we choose. In this workshop, we will opt for the standard flow for backend applications and the implicit flow for the frontend application.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -188,7 +187,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>The last step indicates a few security configuration parameters such as web origins, redirect URL after a correct login, etc.</p>
+<p>The final step involves configuring security parameters, including web origins, redirect URLs after a successful login, etc.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -202,15 +201,15 @@
 <h2 id="backend"><a class="anchor" href="#backend"></a>Backend</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now, we will configure and secure a backend service. In this case, we are using Quarkus to develop the application.</p>
+<p>Now, let&#8217;s proceed to configure and secure a backend service. In this case, we are using Quarkus to develop the application.</p>
 </div>
 <div class="paragraph">
-<p>The application is a backend service to store a list of users of a sports centre.</p>
+<p>The application serves as a backend service designed to store a list of users for a sports center.</p>
 </div>
 <div class="sect2">
 <h3 id="_find_the_backend_url"><a class="anchor" href="#_find_the_backend_url"></a>Find the backend URL</h3>
 <div class="paragraph">
-<p>The front-end application consumes a back-end application. We need to know this URL:</p>
+<p>The front-end application consumes the back-end application, and it is crucial to be aware of the following URL:</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -221,13 +220,13 @@
 <div class="sect2">
 <h3 id="_rhbk_configuration"><a class="anchor" href="#_rhbk_configuration"></a>RHBK configuration</h3>
 <div class="paragraph">
-<p>The Keycloak instance contains a configured realm with a specific client for this workshop.</p>
+<p>The Keycloak instance includes a realm that has been configured with a dedicated client tailored for this workshop.</p>
 </div>
 <div class="paragraph">
-<p>This application is a backend service that uses a standard flow with a private client. In the following section, you can see all the configurations needed.</p>
+<p>This application functions as a backend service utilizing a standard flow with a private client. In the upcoming section, you will find all the necessary configurations.</p>
 </div>
 <div class="paragraph">
-<p>If you wish to see the OpenID Connect client configuration and explore the RHBK admin console, you can navigate along the following section.</p>
+<p>If you want to review the OpenID Connect client configuration and explore the RHBK admin console, please navigate to the following section.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -238,10 +237,7 @@
 <div class="sect2">
 <h3 id="_quarkus_configuration"><a class="anchor" href="#_quarkus_configuration"></a>Quarkus configuration</h3>
 <div class="paragraph">
-<p>Quarkus simplifies the security configuration in our backend services.</p>
-</div>
-<div class="paragraph">
-<p>We need to import the corresponding library. In this case, we&#8217;re working with RHBK, but indeed, it&#8217;s an OpenID connect protocol, so we&#8217;ll use the <code><code>quarkus-oidc</code></code> generic library.</p>
+<p>Quarkus streamlines the security configuration in our backend services. To achieve this, we need to import the corresponding library. In this case, even though we are working with RHBK, since it follows the OpenID Connect protocol, we will utilize the <code>quarkus-oidc</code> generic library.</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -252,7 +248,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>At this point, we only have to configure some properties to indicate where and how to use the OIDC server:</p>
+<p>At this stage, we only need to configure some properties to specify where and how to use the OIDC server:</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -269,43 +265,43 @@ quarkus.oidc.credentials.secret=0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The client secret is the password that uses the client application. It&#8217;s critical to provision it securely.</p>
+<p>The client secret is the password used by the client application, and it&#8217;s crucial to handle it securely.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Now, we can secure our backend application endpoints.</p>
+<p>With the configurations in place, we can now proceed to secure the endpoints of our backend application.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_secure_the_application"><a class="anchor" href="#_secure_the_application"></a>Secure the application</h3>
 <div class="paragraph">
-<p>Another advantage of using Quarkus is the facility of use. We can secure the application endpoint just with annotations.</p>
+<p>Another advantage of using Quarkus is its user-friendly approach. Securing the application endpoints is simplified using annotations.</p>
 </div>
 <div class="paragraph">
-<p>To secure the applications, we have two options: generic or in a fine-grain way. The main difference between both is to indicate the user roles using <code><code>@RolesAllowed({  })</code></code> or not with <code><code>@Authenticated</code></code> in the application controllers.</p>
+<p>To secure applications, we have two options: a generic approach or a fine-grained one. The primary distinction lies in specifying user roles using <code>@RolesAllowed({ })</code> or not using <code>@Authenticated</code> in the application controllers.</p>
 </div>
 <div class="paragraph">
-<p>The client&#8217;s authentication, authorization and roles are managed automatically by Quarkus.</p>
+<p>Quarkus automatically handles client authentication, authorization, and roles management.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_crud_operations"><a class="anchor" href="#_crud_operations"></a>CRUD operations</h3>
 <div class="paragraph">
-<p>CRUD represents all the basic REST operations you can do over a domain: create, read, update and delete.</p>
+<p>CRUD represents all the fundamental REST operations performed on a domain: create, read, update, and delete.</p>
 </div>
 <div class="paragraph">
-<p>Depending on the operation, we need more security or not. In this case, we will see the securitization for the main options.</p>
+<p>The level of security required varies depending on the operation. In this case, we will explore the security measures for each of the main options.</p>
 </div>
 <div class="sect3">
 <h4 id="_how_to_get_an_access_token"><a class="anchor" href="#_how_to_get_an_access_token"></a>How to get an access token</h4>
 <div class="paragraph">
-<p>We will use the curl bash client to test the rest of the application endpoints. If you prefer something more visual, you can avoid doing this section and jump directly to the front-end application section.</p>
+<p>We will employ the <code>curl</code> bash client to test the remaining endpoints of the application. If you prefer a more visual approach, you can skip this section and proceed directly to the front-end application section.</p>
 </div>
 <div class="paragraph">
-<p>To get an access token, we need to configure some parameters that RHBK ask for.</p>
+<p>To obtain an access token, we need to configure certain parameters that RHBK requires.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -329,7 +325,7 @@ PASSWORD=dborrego</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>In each petition, you have to put the access token. You can request for one the following way:</p>
+<p>In each request, it&#8217;s necessary to include the access token. You can request one in the following manner:</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -346,10 +342,10 @@ PASSWORD=dborrego</code></pre>
 <div class="sect3">
 <h4 id="_create"><a class="anchor" href="#_create"></a>Create</h4>
 <div class="paragraph">
-<p>Creating a new element into the domain is a restricted operation that just should be done by an admin. We have a specific role for admins: <code><code>padel-users-admin</code></code></p>
+<p>Creating a new element in the domain is a restricted operation that should only be performed by an admin. We have a dedicated role for admins: <code>padel-users-admin</code>.</p>
 </div>
 <div class="paragraph">
-<p>The application has to avoid the connection and return 403 to any user without enough permission:</p>
+<p>The application must prevent the connection and return a 403 error to any user without sufficient permissions:</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -378,16 +374,16 @@ PASSWORD=dborrego</code></pre>
 <div class="sect3">
 <h4 id="_find"><a class="anchor" href="#_find"></a>Find</h4>
 <div class="paragraph">
-<p>We allow any user to find himself, so we need some filters.</p>
+<p>We permit any user to retrieve their own information, so we require some filters.</p>
 </div>
 <div class="paragraph">
-<p>The first control we need is to check if the user is logged in with the correct role to enter the application.</p>
+<p>The first control is to verify if the user is logged in with the correct role to access the application.</p>
 </div>
 <div class="paragraph">
-<p>The second one is that the application checks it&#8217;s just trying to get its user. Nobody can retrieve another user who is not himself. A good example is a bank application where you can get your account information, but not another one.</p>
+<p>The second control ensures that the application confirms it is only attempting to retrieve its own user information. No user should be able to fetch another user&#8217;s data. A good analogy is a bank application where you can access your account information but not that of another account.</p>
 </div>
 <div class="paragraph">
-<p>The last check involves getting information from the token and taking it to the database query.</p>
+<p>The final check involves extracting information from the token and incorporating it into the database query.</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -410,7 +406,7 @@ PASSWORD=dborrego</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now, you can try to get your user:</p>
+<p>Now, you can attempt to retrieve your user information:</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -428,7 +424,7 @@ PASSWORD=dborrego</code></pre>
 <h2 id="frontend"><a class="anchor" href="#frontend"></a>Frontend</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this section, we want to create a new record in our system, but we must configure some security points.</p>
+<p>In this section, we aim to create a new record in our system, but we need to configure some security measures.</p>
 </div>
 <div class="sect2">
 <h3 id="_find_the_front_end_application_url"><a class="anchor" href="#_find_the_front_end_application_url"></a>Find the front-end application URL</h3>
@@ -438,7 +434,7 @@ PASSWORD=dborrego</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When you enter into the application, you should see a message like this:</p>
+<p>Upon entering the application, you should see a message similar to this:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -452,10 +448,7 @@ PASSWORD=dborrego</code></pre>
 <div class="sect2">
 <h3 id="_create_the_user"><a class="anchor" href="#_create_the_user"></a>Create the user</h3>
 <div class="paragraph">
-<p>The first step for us is to create a new user to show all the configuration step by step.</p>
-</div>
-<div class="paragraph">
-<p>So, enter the RHBK admin console, go to the "users" section and press the "add user" button.</p>
+<p>The initial step is to create a new user to demonstrate the entire configuration step by step. To do this, enter the RHBK admin console, navigate to the "users" section, and click the "add user" button.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -463,7 +456,7 @@ PASSWORD=dborrego</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the following screen, we can select different properties about our new user. We are just going to set the name.</p>
+<p>In the subsequent screen, you can choose various properties for your new user. For now, we will only set the name.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -471,11 +464,7 @@ PASSWORD=dborrego</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Once the user is created, we have to set a
-temporal or definitive credential to enter.</p>
-</div>
-<div class="paragraph">
-<p>To do it, we go to the "Credentials" tab and press the "Set password" button.</p>
+<p>After creating the user, the next step is to set a temporary or permanent credential for access. To accomplish this, navigate to the "Credentials" tab and click the "Set password" button.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -485,7 +474,7 @@ temporal or definitive credential to enter.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>For this example, you can use whatever password you want, but I recommend using an easy password as "reader".</p>
+<p>For this example, you can use any password you prefer, but I recommend using a simple password like "reader".</p>
 </div>
 </td>
 </tr>
@@ -500,10 +489,7 @@ temporal or definitive credential to enter.</p>
 <div class="sect2">
 <h3 id="_login_into_the_frontend_application"><a class="anchor" href="#_login_into_the_frontend_application"></a>Login into the frontend application</h3>
 <div class="paragraph">
-<p>Now, we have our new user, so we can return to the frontend URL and try to log in to the application.</p>
-</div>
-<div class="paragraph">
-<p>Click the green button and the application will redirect you to the Keycloak login page.</p>
+<p>Now that we have our new user, let&#8217;s return to the frontend URL and attempt to log in to the application. Click the green button, and the application will redirect you to the Keycloak login page.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -514,7 +500,7 @@ temporal or definitive credential to enter.</p>
 <p>Once you log in, you will be redirected to the main page, already signed in.</p>
 </div>
 <div class="paragraph">
-<p>Now you should see the following button:</p>
+<p>Now, you should see the following button:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -522,7 +508,7 @@ temporal or definitive credential to enter.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>It means you are correctly logged in to the application. You can&#8217;t see anything thanks to the ReactJS configuration.</p>
+<p>This indicates that you have successfully logged into the application. You may not see anything due to the ReactJS configuration.</p>
 </div>
 </div>
 <div class="sect2">
@@ -535,20 +521,20 @@ temporal or definitive credential to enter.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>This section shows Javascript code to show how easy it is to configure a ReactJS application.</p>
+<p>This section presents JavaScript code to illustrate how straightforward it is to configure a ReactJS application.</p>
 </div>
 <div class="paragraph">
-<p>Keycloak gives us a library to integrate into any popular frontend framework to work easily. In this case, I&#8217;ve used <code><code>"keycloak-js": "^22.0.1",</code></code></p>
+<p>Keycloak provides a library that can be easily integrated into any popular frontend framework. In this case, I&#8217;ve used <code>"keycloak-js": "^22.0.1"</code>.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>We can see the code and inspect it. The variables <code><code>isAdmin</code></code> and <code><code>isUser</code></code> control the roles of the users.</p>
+<p>We can examine and inspect the code. The variables <code>isAdmin</code> and <code>isUser</code> are responsible for controlling the user roles.</p>
 </div>
 <div class="paragraph">
-<p>The Menu component renders the application menu depending on the roles. So, if the user is an admin, it&#8217;ll be able to see the "users" option, and if it is a player, it can see the matches tab.</p>
+<p>The Menu component renders the application menu based on these roles. Therefore, if the user is an admin, they will see the "users" option, and if they are a player, they can view the matches tab.</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -580,7 +566,7 @@ temporal or definitive credential to enter.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>As we&#8217;re working with the SPA page, the user may know the path to access, for example, the admin user&#8217;s page. The Keycloak library controls this option too:</p>
+<p>Since we are working with a Single Page Application (SPA), users may be aware of the paths to access specific pages, such as the admin user&#8217;s page. The Keycloak library also manages this aspect:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -591,16 +577,10 @@ temporal or definitive credential to enter.</p>
 <div class="sect2">
 <h3 id="_add_roles_to_the_user"><a class="anchor" href="#_add_roles_to_the_user"></a>Add roles to the user</h3>
 <div class="paragraph">
-<p>At this point, we know how the ReactJS security model depends on the user roles in the JWT token.</p>
+<p>At this point, we understand how the ReactJS security model relies on the user roles present in the JWT token.</p>
 </div>
 <div class="paragraph">
-<p>Now, we&#8217;re going to add roles to the users to be able to do private actions.</p>
-</div>
-<div class="paragraph">
-<p>The first step is to return to the RHBK admin page and find the user <code><code>reader</code></code>.</p>
-</div>
-<div class="paragraph">
-<p>Once we have located the user, we find the "Role mapping" tab.</p>
+<p>Now, let&#8217;s proceed to add roles to users to enable private actions. The initial step is to return to the RHBK admin page and locate the user named <code>reader</code>. Once you have identified the user, navigate to the "Role mapping" tab.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -608,7 +588,7 @@ temporal or definitive credential to enter.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>After clicking the "Assign role" button, RHBK shows a list of all available roles in the system.</p>
+<p>After clicking the "Assign role" button, RHBK will display a list of all available roles in the system.</p>
 </div>
 <div class="paragraph">
 <p>Select the role "padel-player" and click the "Assign" button.</p>
@@ -619,10 +599,10 @@ temporal or definitive credential to enter.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Now, you can return to the front page. It&#8217;s mandatory to log out and log in to refresh the JWT token.</p>
+<p>Now, you can return to the front page. It&#8217;s necessary to log out and log back in to refresh the JWT token.</p>
 </div>
 <div class="paragraph">
-<p>After doing it, your user has the role assigned, and the front shows him the "Matches" tab.</p>
+<p>After doing so, your user will have the assigned role, and the front end will display the "Matches" tab.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -633,7 +613,7 @@ temporal or definitive credential to enter.</p>
 <div class="sect2">
 <h3 id="_add_role_admin_to_manage_users"><a class="anchor" href="#_add_role_admin_to_manage_users"></a>Add role admin to manage users</h3>
 <div class="paragraph">
-<p>Now, you should repeat the process to add a role to the user <code><code>reader</code></code>. Currently, we assign the role <code><code>padel-users-admin</code></code> to the user. After that, you should be able to see the main page like this:</p>
+<p>Now, repeat the process to add a role to the user named <code>reader</code>. This time, assign the role <code>padel-users-admin</code> to the user. After completing this step, you should be able to see the main page like this:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -644,13 +624,10 @@ temporal or definitive credential to enter.</p>
 <div class="sect2">
 <h3 id="_call_the_backend_service"><a class="anchor" href="#_call_the_backend_service"></a>Call the backend service</h3>
 <div class="paragraph">
-<p>Now, we know how to manage the security in both applications following the OpenID and JWT approach.</p>
+<p>Now that we&#8217;ve learned how to manage security in both applications following the OpenID and JWT approach, let&#8217;s address the final point: integrating the two applications.</p>
 </div>
 <div class="paragraph">
-<p>We need the last point: join the two applications.</p>
-</div>
-<div class="paragraph">
-<p>We have to propagate the JWT user token to the back-end application. It gets the token, and depending on the role, it allows doing the operation or not.</p>
+<p>We need to propagate the JWT user token to the backend application. The backend receives the token and, based on the user&#8217;s role, allows or denies the operation.</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
