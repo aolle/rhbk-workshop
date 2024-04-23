@@ -85,7 +85,7 @@
     <a class="nav-link" href="#architecture">2.1. Architecture</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#rhbk">2.2. RHBK Configuration</a>
+    <a class="nav-link" href="#rhbk">2.2. RedHat Build of Keycloak Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="#backend">2.3. Backend</a>
@@ -125,7 +125,7 @@
 <p>This tutorial demonstrates how to implement an OpenID Connect flow with a JWT implementation.</p>
 </div>
 <div class="paragraph">
-<p>We will set up a new realm in Red Hat Build for Keycloak (RHBK) and configure it. Subsequently, we will deploy the stack and configure user access, enabling roles for various operations.</p>
+<p>We will set up a new realm in Red Hat Build for Keycloak and configure it. Subsequently, we will deploy the stack and configure user access, enabling roles for various operations.</p>
 </div>
 </div>
 </div>
@@ -133,7 +133,7 @@
 <h2 id="architecture"><a class="anchor" href="#architecture"></a>Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Firstly, we require an instance of RHBK to manage access across our applications. One advantage of implementing OpenID Connect with JWT is the seamless integration of various applications and frameworks, facilitated by libraries available for each.</p>
+<p>Firstly, we require an instance of Red Hat Build for Keycloak to manage access across our applications. One advantage of implementing OpenID Connect with JWT is the seamless integration of various applications and frameworks, facilitated by libraries available for each.</p>
 </div>
 <div class="paragraph">
 <p>In this instance, we will construct a comprehensive architecture involving several microservices. The frontend is developed in ReactJS, responsible for displaying the data.</p>
@@ -149,7 +149,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="rhbk"><a class="anchor" href="#rhbk"></a>RHBK configuration</h2>
+<h2 id="rhbk"><a class="anchor" href="#rhbk"></a>Red Hat Build for Keycloak configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section outlines the process of creating a new realm using the OpenID Connect flow and provides guidance on its configuration.</p>
@@ -157,7 +157,7 @@
 <div class="sect2">
 <h3 id="_create_a_realm"><a class="anchor" href="#_create_a_realm"></a>Create a realm</h3>
 <div class="paragraph">
-<p>A realm in RHBK functions as a domain where clients, users, roles, etc., can be configured. In this example, we offer an import containing the configuration to execute this workshop. Nevertheless, we are creating one from scratch to illustrate all the processes:</p>
+<p>A realm in Red Hat Build for Keycloak functions as a domain where clients, users, roles, etc., can be configured. In this example, we offer an import containing the configuration to execute this workshop. Nevertheless, we are creating one from scratch to illustrate all the processes:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -168,7 +168,7 @@
 <div class="sect2">
 <h3 id="_create_a_client"><a class="anchor" href="#_create_a_client"></a>Create a client</h3>
 <div class="paragraph">
-<p>A client in RHBK serves as a consumer. Since we are employing an OpenID Connect flow, the selection of a standard or implicit flow depends on whether we are configuring a private or public client.</p>
+<p>A client in Red Hat Build for Keycloak serves as a consumer. Since we are employing an OpenID Connect flow, the selection of a standard or implicit flow depends on whether we are configuring a private or public client.</p>
 </div>
 <div class="paragraph">
 <p>To register a new client, navigate to the Keycloak admin console and access the client options. In this section, locate the "Create client" option.</p>
@@ -218,7 +218,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_rhbk_configuration"><a class="anchor" href="#_rhbk_configuration"></a>RHBK configuration</h3>
+<h3 id="_red_hat_build_for_keycloak_configuration"><a class="anchor" href="#_red_hat_build_for_keycloak_configuration"></a>Red Hat Build for Keycloak configuration</h3>
 <div class="paragraph">
 <p>The Keycloak instance includes a realm that has been configured with a dedicated client tailored for this workshop.</p>
 </div>
@@ -226,7 +226,7 @@
 <p>This application functions as a backend service utilizing a standard flow with a private client. In the upcoming section, you will find all the necessary configurations.</p>
 </div>
 <div class="paragraph">
-<p>If you want to review the OpenID Connect client configuration and explore the RHBK admin console, please navigate to the following section.</p>
+<p>If you want to review the OpenID Connect client configuration and explore the Red Hat Build for Keycloak admin console, please navigate to the following section.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -237,7 +237,7 @@
 <div class="sect2">
 <h3 id="_quarkus_configuration"><a class="anchor" href="#_quarkus_configuration"></a>Quarkus configuration</h3>
 <div class="paragraph">
-<p>Quarkus streamlines the security configuration in our backend services. To achieve this, we need to import the corresponding library. In this case, even though we are working with RHBK, since it follows the OpenID Connect protocol, we will utilize the <code>quarkus-oidc</code> generic library.</p>
+<p>Quarkus streamlines the security configuration in our backend services. To achieve this, we need to import the corresponding library. In this case, even though we are working with Red Hat Build for Keycloak, since it follows the OpenID Connect protocol, we will utilize the <code>quarkus-oidc</code> generic library.</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
@@ -301,7 +301,7 @@ quarkus.oidc.credentials.secret=0unvbdWCBWcFMQUyVukqA6TQuHHWjj9x</code></pre>
 <p>We will employ the <code>curl</code> bash client to test the remaining endpoints of the application. If you prefer a more visual approach, you can skip this section and proceed directly to the front-end application section.</p>
 </div>
 <div class="paragraph">
-<p>To obtain an access token, we need to configure certain parameters that RHBK requires.</p>
+<p>To obtain an access token, we need to configure certain parameters that Red Hat Build for Keycloak requires.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -448,7 +448,7 @@ PASSWORD=dborrego</code></pre>
 <div class="sect2">
 <h3 id="_create_the_user"><a class="anchor" href="#_create_the_user"></a>Create the user</h3>
 <div class="paragraph">
-<p>The initial step is to create a new user to demonstrate the entire configuration step by step. To do this, enter the RHBK admin console, navigate to the "users" section, and click the "add user" button.</p>
+<p>The initial step is to create a new user to demonstrate the entire configuration step by step. To do this, enter the Red Hat Build for Keycloak admin console, navigate to the "users" section, and click the "add user" button.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -580,7 +580,7 @@ PASSWORD=dborrego</code></pre>
 <p>At this point, we understand how the ReactJS security model relies on the user roles present in the JWT token.</p>
 </div>
 <div class="paragraph">
-<p>Now, let&#8217;s proceed to add roles to users to enable private actions. The initial step is to return to the RHBK admin page and locate the user named <code>reader</code>. Once you have identified the user, navigate to the "Role mapping" tab.</p>
+<p>Now, let&#8217;s proceed to add roles to users to enable private actions. The initial step is to return to the Red Hat Build for Keycloak admin page and locate the user named <code>reader</code>. Once you have identified the user, navigate to the "Role mapping" tab.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -588,7 +588,7 @@ PASSWORD=dborrego</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>After clicking the "Assign role" button, RHBK will display a list of all available roles in the system.</p>
+<p>After clicking the "Assign role" button, Red Hat Build for Keycloak will display a list of all available roles in the system.</p>
 </div>
 <div class="paragraph">
 <p>Select the role "padel-player" and click the "Assign" button.</p>
