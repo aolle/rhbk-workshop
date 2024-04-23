@@ -3,12 +3,12 @@ include::_attributes.adoc[]
 
 This tutorial demonstrates how to implement an OpenID Connect flow with a JWT implementation.
 
-We will set up a new realm in Red Hat Build for Keycloak (RHBK) and configure it. Subsequently, we will deploy the stack and configure user access, enabling roles for various operations.
+We will set up a new realm in Red Hat Build for Keycloak and configure it. Subsequently, we will deploy the stack and configure user access, enabling roles for various operations.
 
 [#architecture]
 == Architecture
 
-Firstly, we require an instance of RHBK to manage access across our applications. One advantage of implementing OpenID Connect with JWT is the seamless integration of various applications and frameworks, facilitated by libraries available for each.
+Firstly, we require an instance of Red Hat Build for Keycloak to manage access across our applications. One advantage of implementing OpenID Connect with JWT is the seamless integration of various applications and frameworks, facilitated by libraries available for each.
 
 In this instance, we will construct a comprehensive architecture involving several microservices. The frontend is developed in ReactJS, responsible for displaying the data.
 
@@ -17,19 +17,19 @@ The user backend microservice, built with Quarkus, showcases a straightforward i
 image::openid/frontend-architecture-01.png[]
 
 [#rhbk]
-== RHBK configuration
+== Red Hat Build for Keycloak configuration
 
 This section outlines the process of creating a new realm using the OpenID Connect flow and provides guidance on its configuration.
 
 === Create a realm
 
-A realm in RHBK functions as a domain where clients, users, roles, etc., can be configured. In this example, we offer an import containing the configuration to execute this workshop. Nevertheless, we are creating one from scratch to illustrate all the processes:
+A realm in Red Hat Build for Keycloak functions as a domain where clients, users, roles, etc., can be configured. In this example, we offer an import containing the configuration to execute this workshop. Nevertheless, we are creating one from scratch to illustrate all the processes:
 
 image::openid/rhbk-create-realm-01.png[]
 
 === Create a client
 
-A client in RHBK serves as a consumer. Since we are employing an OpenID Connect flow, the selection of a standard or implicit flow depends on whether we are configuring a private or public client.
+A client in Red Hat Build for Keycloak serves as a consumer. Since we are employing an OpenID Connect flow, the selection of a standard or implicit flow depends on whether we are configuring a private or public client.
 
 To register a new client, navigate to the Keycloak admin console and access the client options. In this section, locate the "Create client" option.
 
@@ -61,19 +61,19 @@ The front-end application consumes the back-end application, and it is crucial t
 oc get route -A | grep ms-users | awk '{print $3}'
 ----
 
-=== RHBK configuration
+=== Red Hat Build for Keycloak configuration
 
 The Keycloak instance includes a realm that has been configured with a dedicated client tailored for this workshop.
 
 This application functions as a backend service utilizing a standard flow with a private client. In the upcoming section, you will find all the necessary configurations.
 
-If you want to review the OpenID Connect client configuration and explore the RHBK admin console, please navigate to the following section.
+If you want to review the OpenID Connect client configuration and explore the Red Hat Build for Keycloak admin console, please navigate to the following section.
 
 image::openid/backend-rhbk-config-01.png[]
 
 === Quarkus configuration
 
-Quarkus streamlines the security configuration in our backend services. To achieve this, we need to import the corresponding library. In this case, even though we are working with RHBK, since it follows the OpenID Connect protocol, we will utilize the `quarkus-oidc` generic library.
+Quarkus streamlines the security configuration in our backend services. To achieve this, we need to import the corresponding library. In this case, even though we are working with Red Hat Build for Keycloak, since it follows the OpenID Connect protocol, we will utilize the `quarkus-oidc` generic library.
 
 [.lines_space]
 [.console-input]
@@ -121,7 +121,7 @@ The level of security required varies depending on the operation. In this case, 
 
 We will employ the `curl` bash client to test the remaining endpoints of the application. If you prefer a more visual approach, you can skip this section and proceed directly to the front-end application section.
 
-To obtain an access token, we need to configure certain parameters that RHBK requires.
+To obtain an access token, we need to configure certain parameters that Red Hat Build for Keycloak requires.
 
 [NOTE,subs="bash,+macros"]
 ====
@@ -251,7 +251,7 @@ This message indicates that you have not logged into the application. So we have
 
 === Create the user
 
-The initial step is to create a new user to demonstrate the entire configuration step by step. To do this, enter the RHBK admin console, navigate to the "users" section, and click the "add user" button.
+The initial step is to create a new user to demonstrate the entire configuration step by step. To do this, enter the Red Hat Build for Keycloak admin console, navigate to the "users" section, and click the "add user" button.
 
 image::openid/frontend-create-user-01.png[]
 
@@ -334,11 +334,11 @@ image::openid/frontend-login-03.png[]
 
 At this point, we understand how the ReactJS security model relies on the user roles present in the JWT token.
 
-Now, let's proceed to add roles to users to enable private actions. The initial step is to return to the RHBK admin page and locate the user named `reader`. Once you have identified the user, navigate to the "Role mapping" tab.
+Now, let's proceed to add roles to users to enable private actions. The initial step is to return to the Red Hat Build for Keycloak admin page and locate the user named `reader`. Once you have identified the user, navigate to the "Role mapping" tab.
 
 image::openid/frontend-add-role-01.png[]
 
-After clicking the "Assign role" button, RHBK will display a list of all available roles in the system.
+After clicking the "Assign role" button, Red Hat Build for Keycloak will display a list of all available roles in the system.
 
 Select the role "padel-player" and click the "Assign" button.
 
