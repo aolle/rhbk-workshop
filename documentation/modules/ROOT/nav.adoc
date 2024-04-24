@@ -6,8 +6,8 @@
 ** xref:setup.adoc#deploy-ipa[1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift]
 
 * xref:secapp.adoc[2. Authorization Services]
-* xref:secapp.adoc#presetup[2.1 Configuration]
-* xref:secapp.adoc#quarkus-apps[2.2 Securing Web Applications]
+** xref:secapp.adoc#presetup[2.1 Configuration]
+** xref:secapp.adoc#quarkus-apps[2.2 Securing Web Applications]
 
 * xref:openid-jwt.adoc[3. OpenID Connect + JWT]
 ** xref:openid-jwt.adoc#architecture[3.1. Architecture]
