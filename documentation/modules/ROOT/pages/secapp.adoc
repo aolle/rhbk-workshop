@@ -1,0 +1,86 @@
+= Authorization Services
+include::_attributes.adoc[]
+
+[#presetup]
+== Configuration
+
+Before proceeding with the next sections, we need to configure the realm, roles and users in our Red Hat build of Keycloak instance.
+
+* Open a browser window and log in to the Red Hat build of Keycloak administration web console.
+
+* Create the `demo` realm. Click on the `master` realm dropdown menu, click `Create Realm`.
+
+image::authservices/create-realm.png[]
+
+* Click `Create`.
+
+image::authservices/create-realm2.png[]
+
+* Create the `staff` group. Click on `Groups`.
+
+image::authservices/groups.png[]
+
+* Then click `Create group`.
+
+image::authservices/groups2.png[]
+
+* Set `staff` as the group name, and click `Create`.
+
+image::authservices/groups3.png[]
+
+* Create the child group named `Personal staff`. Click on the kebab button of the `staff` group and click `Create child group`.
+
+image::authservices/groups4.png[]
+
+* Set `Personal staff` as the name, and click `Create`.
+
+image::authservices/groups5.png[]
+
+* Create the role `vet`. Click on `Realm roles`, then `Create role`.
+
+image::authservices/roles.png[]
+
+image::authservices/roles2.png[]
+
+* Set the Role name, and click `Save`.
+
+image::authservices/roles3.png[]
+
+* Repeat the same steps for creating a role named `assistant`.
+
+image::authservices/roles4.png[]
+
+* Create the user `angel`. Click on `Users`, then `Add user`.
+
+image::authservices/users.png[]
+
+image::authservices/users2.png[]
+
+* Set the username, and click `Create`.
+
+image::authservices/users3.png[]
+
+* Open the `Credentials` tab and set the password for the user. Make sure to set `Temporary` to `OFF` before setting the password.
+
+image::authservices/users4.png[]
+
+image::authservices/users5.png[]
+
+* Open the `Role Mappings` tab and assign the `vet` role to the user.
+
+image::authservices/users6.png[]
+
+image::authservices/users7.png[]
+
+* Open the `Groups` tab and assign the user `angel` to the `Personal staff` group.
+
+image::authservices/users8.png[]
+
+image::authservices/users9.png[]
+
+image::authservices/users10.png[]
+
+* Repeat the same steps for creating a user named `elisabeth` but assign the `assistant` role. Also, remember to incude the user in the `Personal staff` group.
+
+[#quarkus-apps]
+== Securing Web Applications
