@@ -84,3 +84,180 @@ image::authservices/users10.png[]
 
 [#quarkus-apps]
 == Securing Web Applications
+
+The sample application that we will use in this section is the `Quarkus Petclinic project`.
+
+In this tutorial, we will work with a version that has been modified for the tutorial.
+
+The repository for this modified version is:
+
+https://github.com/atarazana/quarkus-petclinic
+
+To get started, clone the repository and switch to the `rhbk-base-22` branch:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+git clone -b rhbk-base-22 https://github.com/atarazana/quarkus-petclinic.git
+----
+
+Test the application:
+
+[.lines_space]
+[.console-input]
+[source,bash, subs="+macros,+attributes"]
+----
+./mvnw clean quarkus:dev
+----
+
+* Open a browser window and visit the application URL.
+
+image::authservices/petclinic-main.png[]
+
+Before securing the application, let's configure a new client in our Red Hat build of Keycloak realm.
+
+* Open a browser window and log in to the Red Hat build of Keycloak administration web console.
+
+* Select our `demo` realm and click `Clients`. Click `Create client`.
+
+image::authservices/client.png[]
+
+* Set `quarkus-petclinic` as `Client ID`. Click `Next` until `Save`.
+
+image::authservices/client2.png[]
+
+* On the `quarkus-petclinic` client configuration page:
+** Enable `Client authentication`.
+** Enable `Authorization`.
+** Set `Valid Redirect URIs` to include the root context of your application.
+** Click `Save`.
+
+image::authservices/client3.png[]
+
+At this point, we have the `demo` realm with the `quarkus-petclinic` client; additionally, we created two roles and two users: the user `angel` that has the `vet` role and the user `elisabeth` that has the role `assistant`.
+
+* The authorization granularity that we want to configure based on our application is the following:
+** Any user that belongs to the `demo` realm, like `elisabeth`, can browse the application except the `VETERINARIANS` resource.
+** Only the users with the role `vet` can view the `VETERINARIANS` resource (which has the `/vets.html` context).
+** Any other user access outside the realm will be rejected.
+
+image::authservices/quarkus-petclinic-menu.png[]
+
+Let's configure our client authorization.
+
+* Open a browser window and log in to the Red Hat build of Keycloak administration web console. Browse to our `quarkus-petclinic` client and click the `Authorization` and then `Policies` tabs.
+
+image::authservices/client4.png[]
+
+* Click `Create policy`, select `Group`.
+
+image::authservices/client5.png[]
+
+* Set `Default Group Policy` as the `Name`. Add the `staff` group to the `Groups` list. Make sure that the `Logic` is set to `Positive` and `Extend to Children` is checked (to enable the checkbox, you may need to click `Save` first). Finally, click `Save`.
+
+image::authservices/client6.png[]
+
+* Come back, select the `Resources` tab and click `Create Permission` for the `Default Resource`.
+
+image::authservices/client7.png[]
+
+* Set `Default Resource Permission` as `Name` and select `Default Resource` as `Resources`. Add the recently created `Default Group Policy` policy. Click `Save`.
+
+image::authservices/client8.png[]
+
+* Come back again, select the `Resources` tab and create a new resource by clicking on `Create resource`.
+
+image::authservices/client9.png[]
+
+* Set `Vets Resource` as `Name` and `Display name`, and `/vets.html` as URI. Click `Save`.
+
+image::authservices/client10.png[]
+
+* Browse to `Authorization` and `Policies` tabs. Click on `Create Policy`.
+
+image::authservices/client11.png[]
+
+* Select `Role`
+
+image::authservices/client12.png[]
+
+* Set `Vet Role Policy` as the Name, `vet` as `Realm Roles`, and check required. Click `Save`.
+
+image::authservices/client13.png[]
+
+* Browse to the `Authorization` and `Resources` tabs.
+
+* Click on `Create Permission` for the `Vets Resource`.
+
+image::authservices/client14.png[]
+
+* Set `Vets Resource Permission` as `Name`. And apply the `Vet Role Policy`. Click `Save`.
+
+image::authservices/client16.png[]
+
+At this point, the Red Hat build of Keycloak client is properly configured.
+
+Let's configure the application side.
+
+* Open a browser window and log in to the Red Hat build of Keycloak administration web console. Browse to our `quarkus-petclinic` client and click the `Credentials` tab. Write down the `Secret` value, we will need it soon.
+
+image::authservices/client15.png[]
+
+* Export the client secret
+
+[.lines_space]
+[.console-input]
+[source,text, subs="+macros,+attributes"]
+----
+export KEYCLOAK_CLIENT_SECRET=<the secret>
+----
+
+* Add the following dependencies to the `pom.xml` file:
+
+[.lines_space]
+[.console-input]
+[source,text, subs="+macros,+attributes"]
+----
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-keycloak-authorization</artifactId>
+    </dependency>
+----
+
+* Add the following configuration to the `application.properties` file of the application, as shown below:
+
+[.lines_space]
+[.console-input]
+[source,text, subs="+macros,+attributes"]
+----
+quarkus.oidc.auth-server-url=http://${KEYCLOAK_HOST:localhost:8080}/realms/demo
+quarkus.oidc.client-id=quarkus-petclinic
+quarkus.oidc.credentials.secret=${KEYCLOAK_CLIENT_SECRET:secret}
+quarkus.oidc.tls.verification=none
+quarkus.oidc.roles.source=accesstoken
+
+quarkus.oidc.application-type=web-app
+quarkus.oidc.webapp.auth-server-url=${quarkus.oidc.auth-server-url}
+quarkus.oidc.webapp.client-id=${quarkus.oidc.client-id}
+quarkus.oidc.webapp.credentials.secret=${quarkus.oidc.credentials.secret}
+quarkus.oidc.webapp.roles.source=${quarkus.oidc.roles.source}
+
+quarkus.keycloak.policy-enforcer.enable=true
+----
+
+* Redeploy and test the application accesses:
+** Open a new incognito browser session.
+** Browse to the context root of the Quarkus Petclinic application. The request will be redirected to the Red Hat Single Sign-On login page. Here, we checked that the anonymous access to the application is forbidden.
+** Log in as `elisabeth`. The request will be redirected to the application after a successful login.
+** Browse through the application, try to access the VETERINARIANS section. The access should be denied, as `elisabeth` has the `assistant` role and the access is restricted to the `vet` role. An error will be shown on the application page.
+** Close the browser and open a new one incognito session.
+** Visit the context root of the application again.
+** Login as `angel`.
+** Browse through the application, try to access the VETERINARIANS section. The access should be granted, as `angel` has the `vet` role.
+
+NOTE: A complete OIDC working Petclinic Quarkus application is available at `rhbk-oidc-22` branch.
