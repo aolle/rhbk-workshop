@@ -363,7 +363,402 @@
 <div class="sect1">
 <h2 id="quarkus-apps"><a class="anchor" href="#quarkus-apps"></a>Securing Web Applications</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The sample application that we will use in this section is the <code>Quarkus Petclinic project</code>.</p>
+</div>
+<div class="paragraph">
+<p>In this tutorial, we will work with a version that has been modified for the tutorial.</p>
+</div>
+<div class="paragraph">
+<p>The repository for this modified version is:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/atarazana/quarkus-petclinic" class="bare">https://github.com/atarazana/quarkus-petclinic</a></p>
+</div>
+<div class="paragraph">
+<p>To get started, clone the repository and switch to the <code>rhbk-base-22</code> branch:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone -b rhbk-base-22 <a href="https://github.com/atarazana/quarkus-petclinic.git" class="bare">https://github.com/atarazana/quarkus-petclinic.git</a></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Test the application:</p>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./mvnw clean quarkus:dev</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open a browser window and visit the application URL.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/petclinic-main.png" alt="petclinic main">
+</div>
+</div>
+<div class="paragraph">
+<p>Before securing the application, let&#8217;s configure a new client in our Red Hat build of Keycloak realm.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open a browser window and log in to the Red Hat build of Keycloak administration web console.</p>
+</li>
+<li>
+<p>Select our <code>demo</code> realm and click <code>Clients</code>. Click <code>Create client</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client.png" alt="client">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set <code>quarkus-petclinic</code> as <code>Client ID</code>. Click <code>Next</code> until <code>Save</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client2.png" alt="client2">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>On the <code>quarkus-petclinic</code> client configuration page:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Enable <code>Client authentication</code>.</p>
+</li>
+<li>
+<p>Enable <code>Authorization</code>.</p>
+</li>
+<li>
+<p>Set <code>Valid Redirect URIs</code> to include the root context of your application.</p>
+</li>
+<li>
+<p>Click <code>Save</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client3.png" alt="client3">
+</div>
+</div>
+<div class="paragraph">
+<p>At this point, we have the <code>demo</code> realm with the <code>quarkus-petclinic</code> client; additionally, we created two roles and two users: the user <code>angel</code> that has the <code>vet</code> role and the user <code>elisabeth</code> that has the role <code>assistant</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The authorization granularity that we want to configure based on our application is the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Any user that belongs to the <code>demo</code> realm, like <code>elisabeth</code>, can browse the application except the <code>VETERINARIANS</code> resource.</p>
+</li>
+<li>
+<p>Only the users with the role <code>vet</code> can view the <code>VETERINARIANS</code> resource (which has the <code>/vets.html</code> context).</p>
+</li>
+<li>
+<p>Any other user access outside the realm will be rejected.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/quarkus-petclinic-menu.png" alt="quarkus petclinic menu">
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s configure our client authorization.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open a browser window and log in to the Red Hat build of Keycloak administration web console. Browse to our <code>quarkus-petclinic</code> client and click the <code>Authorization</code> and then <code>Policies</code> tabs.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client4.png" alt="client4">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click <code>Create policy</code>, select <code>Group</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client5.png" alt="client5">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set <code>Default Group Policy</code> as the <code>Name</code>. Add the <code>staff</code> group to the <code>Groups</code> list. Make sure that the <code>Logic</code> is set to <code>Positive</code> and <code>Extend to Children</code> is checked (to enable the checkbox, you may need to click <code>Save</code> first). Finally, click <code>Save</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client6.png" alt="client6">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Come back, select the <code>Resources</code> tab and click <code>Create Permission</code> for the <code>Default Resource</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client7.png" alt="client7">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set <code>Default Resource Permission</code> as <code>Name</code> and select <code>Default Resource</code> as <code>Resources</code>. Add the recently created <code>Default Group Policy</code> policy. Click <code>Save</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client8.png" alt="client8">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Come back again, select the <code>Resources</code> tab and create a new resource by clicking on <code>Create resource</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client9.png" alt="client9">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set <code>Vets Resource</code> as <code>Name</code> and <code>Display name</code>, and <code>/vets.html</code> as URI. Click <code>Save</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client10.png" alt="client10">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Browse to <code>Authorization</code> and <code>Policies</code> tabs. Click on <code>Create Policy</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client11.png" alt="client11">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Select <code>Role</code></p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client12.png" alt="client12">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set <code>Vet Role Policy</code> as the Name, <code>vet</code> as <code>Realm Roles</code>, and check required. Click <code>Save</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client13.png" alt="client13">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Browse to the <code>Authorization</code> and <code>Resources</code> tabs.</p>
+</li>
+<li>
+<p>Click on <code>Create Permission</code> for the <code>Vets Resource</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client14.png" alt="client14">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set <code>Vets Resource Permission</code> as <code>Name</code>. And apply the <code>Vet Role Policy</code>. Click <code>Save</code>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client16.png" alt="client16">
+</div>
+</div>
+<div class="paragraph">
+<p>At this point, the Red Hat build of Keycloak client is properly configured.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s configure the application side.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open a browser window and log in to the Red Hat build of Keycloak administration web console. Browse to our <code>quarkus-petclinic</code> client and click the <code>Credentials</code> tab. Write down the <code>Secret</code> value, we will need it soon.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/authservices/client15.png" alt="client15">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Export the client secret</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">export KEYCLOAK_CLIENT_SECRET=&lt;the secret&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add the following dependencies to the <code>pom.xml</code> file:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">    &lt;dependency&gt;
+      &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+      &lt;artifactId&gt;quarkus-oidc&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+      &lt;artifactId&gt;quarkus-keycloak-authorization&lt;/artifactId&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add the following configuration to the <code>application.properties</code> file of the application, as shown below:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock lines_space console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">quarkus.oidc.auth-server-url=http://${KEYCLOAK_HOST:localhost:8080}/realms/demo
+quarkus.oidc.client-id=quarkus-petclinic
+quarkus.oidc.credentials.secret=${KEYCLOAK_CLIENT_SECRET:secret}
+quarkus.oidc.tls.verification=none
+quarkus.oidc.roles.source=accesstoken
 
+quarkus.oidc.application-type=web-app
+quarkus.oidc.webapp.auth-server-url=${quarkus.oidc.auth-server-url}
+quarkus.oidc.webapp.client-id=${quarkus.oidc.client-id}
+quarkus.oidc.webapp.credentials.secret=${quarkus.oidc.credentials.secret}
+quarkus.oidc.webapp.roles.source=${quarkus.oidc.roles.source}
+
+quarkus.keycloak.policy-enforcer.enable=true</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Redeploy and test the application accesses:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Open a new incognito browser session.</p>
+</li>
+<li>
+<p>Browse to the context root of the Quarkus Petclinic application. The request will be redirected to the Red Hat Single Sign-On login page. Here, we checked that the anonymous access to the application is forbidden.</p>
+</li>
+<li>
+<p>Log in as <code>elisabeth</code>. The request will be redirected to the application after a successful login.</p>
+</li>
+<li>
+<p>Browse through the application, try to access the VETERINARIANS section. The access should be denied, as <code>elisabeth</code> has the <code>assistant</code> role and the access is restricted to the <code>vet</code> role. An error will be shown on the application page.</p>
+</li>
+<li>
+<p>Close the browser and open a new one incognito session.</p>
+</li>
+<li>
+<p>Visit the context root of the application again.</p>
+</li>
+<li>
+<p>Login as <code>angel</code>.</p>
+</li>
+<li>
+<p>Browse through the application, try to access the VETERINARIANS section. The access should be granted, as <code>angel</code> has the <code>vet</code> role.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A complete OIDC working Petclinic Quarkus application is available at <code>rhbk-oidc-22</code> branch.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <nav class="pagination">
