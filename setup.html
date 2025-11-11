@@ -59,52 +59,61 @@
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="setup.html">1. Environment Setup</a>
+    <a class="nav-link" href="setup.html">Environment Setup</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#tools">1.1. Workshop Tools</a>
+    <a class="nav-link" href="#tools">Workshop Tools</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="#deploy">1.2. Deploying Red Hat build of Keycloak on OpenShift</a>
+    <a class="nav-link" href="#deploy">Deploying Red Hat build of Keycloak on OpenShift</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#deploy-operator">1.2.1 Deploying Red Hat build of Keycloak on OpenShift using the Operator</a>
+    <a class="nav-link" href="#deploy-operator">Deploying Red Hat build of Keycloak on OpenShift using the Operator</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#deploy-ipa">1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="secapp.html">2. Authorization Services</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="secapp.html#presetup">2.1 Configuration</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="secapp.html#quarkus-apps">2.2 Securing Web Applications</a>
+    <a class="nav-link" href="#deploy-ipa">Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="openid-jwt.html">3. OpenID Connect + JWT</a>
+    <a class="nav-link" href="secapp.html">Authorization Services</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="openid-jwt.html#architecture">3.1. Architecture</a>
+    <a class="nav-link" href="secapp.html#presetup">Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="openid-jwt.html#rhbk">3.2. Configuration</a>
+    <a class="nav-link" href="secapp.html#quarkus-apps">Securing Web Applications</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="openid-jwt.html">OpenID Connect + JWT</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="openid-jwt.html#architecture">Architecture</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="openid-jwt.html#backend">3.3. Backend</a>
+    <a class="nav-link" href="openid-jwt.html#rhbk">Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="openid-jwt.html#frontend">3.4. Frontend</a>
+    <a class="nav-link" href="openid-jwt.html#backend">Backend</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="openid-jwt.html#frontend">Frontend</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="migration.html">Migrating from Red Hat Single Sign-On 7.6 to Red Hat Build of Keycloak</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migration.html#setup">Lab Setup for Migration</a>
   </li>
 </ul>
   </li>
@@ -122,7 +131,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Red Hat Build of Keycloak Workshop</a></li>
-    <li><a href="setup.html">1. Environment Setup</a></li>
+    <li><a href="setup.html">Environment Setup</a></li>
   </ul>
 </nav>
   <div style="padding: 0 0.5rem 0 0.75rem;">
@@ -240,7 +249,7 @@ The extensions source code used during this workshop can be found at the followi
 <p>From the Administrator perspective, click <code>Operators</code>, then <code>OperatorHub</code>.</p>
 </li>
 <li>
-<p>In the Filter by keyword field, type <code>rhbk</code>.</p>
+<p>In the <strong>Filter by keyword</strong> field, type <code>rhbk</code>.</p>
 </li>
 </ul>
 </div>
@@ -252,7 +261,7 @@ The extensions source code used during this workshop can be found at the followi
 <div class="ulist">
 <ul>
 <li>
-<p>Select the <code>Keycloak Operator</code> tile and click <code>Install</code>.</p>
+<p>Select the <code>Keycloak Operator</code> tile and click <strong>Install</strong>.</p>
 </li>
 </ul>
 </div>
@@ -264,7 +273,9 @@ The extensions source code used during this workshop can be found at the followi
 <div class="ulist">
 <ul>
 <li>
-<p>On the Install Operator page, leave <code>stable-v22</code> from the list of available <code>Update Channel</code> options. The Operator supports only the <code>A specific namespace on the cluster</code> as installation mode. Create the <code>rhbk</code> project. Choose <code>Automatic</code> update approval.</p>
+<p>On the <strong>Install Operator</strong> page, keep the <code>stable-v22</code> option from the list of available <strong>Update Channels</strong>.
+The Operator only supports the installation mode <strong>A specific namespace on the cluster</strong>.
+Create the <code>rhbk</code> project and choose <strong>Automatic</strong> update approval.</p>
 </li>
 </ul>
 </div>
@@ -276,12 +287,12 @@ The extensions source code used during this workshop can be found at the followi
 <div class="ulist">
 <ul>
 <li>
-<p>Click <code>Install</code>.</p>
+<p>Click <strong>Install</strong>.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Once installed, the <code>Keycloak Operator</code> should appear in the list of installed operators, accessible from the <code>Operators</code> menu under <code>Installed Operators</code>.</p>
+<p>Once installed, the <code>Keycloak Operator</code> should appear in the list of installed operators, accessible from the <code>Operators</code> menu under <strong>Installed Operators</strong>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -289,10 +300,10 @@ The extensions source code used during this workshop can be found at the followi
 </div>
 </div>
 <div class="paragraph">
-<p>Keycloak requires specific prerequisites (unless it is initiated with <code>start-dev</code>) that we will proceed to install and configure.</p>
+<p>Keycloak requires certain prerequisites (unless started in <code>start-dev</code> mode), which we will now install and configure.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s set up the database that Keycloak will rely on. In this workshop, we&#8217;ll opt for a PostgreSQL database installation.</p>
+<p>Let’s set up the database that Keycloak will rely on. For this workshop, we’ll use a PostgreSQL database.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -327,7 +338,8 @@ The extensions source code used during this workshop can be found at the followi
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The YAML file already includes the database&#8217;s <code>keycloak</code> username and password, which is adequate for a workshop. In a production environment, it&#8217;s essential to securely define these fields, and it&#8217;s recommended to store them in a secret.
+The YAML file already includes the <code>keycloak</code> username and password for the database, which is sufficient for workshop purposes.
+In a production environment, you must securely define these fields and store them in a secret.
 </td>
 </tr>
 </table>
@@ -335,7 +347,7 @@ The YAML file already includes the database&#8217;s <code>keycloak</code> userna
 <div class="ulist">
 <ul>
 <li>
-<p>Deploy the Red Hat Build of Keycloak Instance:</p>
+<p>Deploy the Red Hat build of Keycloak instance:</p>
 </li>
 </ul>
 </div>
@@ -351,18 +363,20 @@ The YAML file already includes the database&#8217;s <code>keycloak</code> userna
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
+For this workshop, the Keycloak instance is configured with plain HTTP enabled, and strict hostname resolution disabled.
+In production, TLS configuration and proper hostname setup are required.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>After deploying and ensuring the Keycloak instance is running successfully, we can access the administration console. The default credentials are generated randomly during the deployment. To retrieve them, we need to check the generated secrets as follows:</p>
+<p>After deploying and confirming that the Keycloak instance is running successfully, you can access the administration console.
+The default credentials are randomly generated during deployment. Retrieve them using the following commands:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Obtain the secrets and decode them.</p>
+<p>Obtain and decode the generated secrets:</p>
 </li>
 </ul>
 </div>
@@ -379,7 +393,7 @@ oc -n rhbk get secret example-keycloak-initial-admin -o jsonpath='{.data.passwor
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In production environments, it is advisable to change the randomly generated default credentials and enable multi-factor verification for enhanced security.
+In production environments, it is strongly recommended to change the default credentials and enable multi-factor authentication for enhanced security.
 </td>
 </tr>
 </table>
@@ -387,7 +401,7 @@ In production environments, it is advisable to change the randomly generated def
 <div class="ulist">
 <ul>
 <li>
-<p>Try accessing the administration console using the provided credentials.</p>
+<p>Access the administration console using the retrieved credentials.</p>
 </li>
 </ul>
 </div>
@@ -400,45 +414,46 @@ In production environments, it is advisable to change the randomly generated def
 </div>
 </div>
 <div class="sect1">
-<h2 id="deploy-ipa"><a class="anchor" href="#deploy-ipa"></a>1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift</h2>
+<h2 id="deploy-ipa"><a class="anchor" href="#deploy-ipa"></a>Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section explains how to install FreeIPA, an Identity Management (IdM) solution that combines Linux, 389 Directory Server, MIT Kerberos, NTP, DNS and Dogtag.</p>
+<p>This section explains how to install FreeIPA, an Identity Management (IdM) solution that combines Linux, 389 Directory Server, MIT Kerberos, NTP, DNS, and Dogtag Certificate System.</p>
 </div>
 <div class="paragraph">
 <p><a href="https://www.freeipa.org/page/About" class="bare">https://www.freeipa.org/page/About</a></p>
 </div>
 <div class="paragraph">
-<p>FreeIPA is the upstream version of Red Hat Identity Management.</p>
+<p>FreeIPA is the upstream project of Red Hat Identity Management.</p>
 </div>
 <div class="paragraph">
-<p>Later on, we will see how we can integrate Red Hat build of Keycloak with IdM/FreeIPA.</p>
+<p>Later in this workshop, we will integrate Red Hat build of Keycloak with IdM/FreeIPA.</p>
 </div>
 <div class="paragraph">
-<p>To get started, stay logged in into your Red Hat OpenShift platform, and for convenience, select the <code>kc</code> project that has been created previously. Follow the steps below for deploying a FreeIPA instance on top of Red Hat OpenShift.</p>
+<p>To get started, remain logged in to your Red Hat OpenShift cluster and, for convenience, select the previously created <code>kc</code> project.
+Follow the steps below to deploy a FreeIPA instance on Red Hat OpenShift.</p>
 </div>
 <div class="listingblock lines_space console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># export the image that we are going to deploy
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Export the image to be deployed
 export IMG=quay.io/freeipa/freeipa-openshift-container:4.9.8
 export IMG_BASE=${IMG}
 
-# clone the repository and deploy the roles and scc
-# if preferred, a remote build could be performed instead of cloning the repository
+# Clone the repository and deploy the roles and SCC
+# Alternatively, a remote build can be performed instead of cloning the repository
 git clone <a href="https://github.com/freeipa/freeipa-openshift-container.git" class="bare">https://github.com/freeipa/freeipa-openshift-container.git</a>
 cd freeipa-openshift-container/
 kustomize build deploy/admin | oc create -f -
 
-# create the ocp template and deploy it
+# Create the OpenShift template and deploy it
 make template-create
 make template-new-app</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Write down the <code>IPA_ADMIN_PASSWORD</code> and <code>IPA_DM_PASSWORD</code> displayed on the terminal; we will need it later.</p>
+<p>Take note of the <code>IPA_ADMIN_PASSWORD</code> and <code>IPA_DM_PASSWORD</code> values displayed in the terminal; they will be required later.</p>
 </div>
 <div class="paragraph">
-<p>Open the FreeIPA administration console to verify that the access and credentials are working properly.</p>
+<p>Open the FreeIPA administration console to verify that access and credentials are functioning correctly.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -449,7 +464,7 @@ make template-new-app</code></pre>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="index.html">Red Hat Build of Keycloak Workshop</a></span>
-  <span class="next"><a href="secapp.html">2. Authorization Services</a></span>
+  <span class="next"><a href="secapp.html">Authorization Services</a></span>
 </nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
