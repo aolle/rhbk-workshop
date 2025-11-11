@@ -30,27 +30,29 @@ https://github.com/aolle/rhbk-workshop/code
 
 * From the Administrator perspective, click `Operators`, then `OperatorHub`.
 
-* In the Filter by keyword field, type `rhbk`.
+* In the *Filter by keyword* field, type `rhbk`.
 
 image::setup/operatorhub-rhbk.png[]
 
-* Select the `Keycloak Operator` tile and click `Install`.
+* Select the `Keycloak Operator` tile and click *Install*.
 
 image::setup/install-rhbk-operator.png[]
 
-* On the Install Operator page, leave `stable-v22` from the list of available `Update Channel` options. The Operator supports only the `A specific namespace on the cluster` as installation mode. Create the `rhbk` project. Choose `Automatic` update approval.
+* On the *Install Operator* page, keep the `stable-v22` option from the list of available *Update Channels*.
+  The Operator only supports the installation mode *A specific namespace on the cluster*.
+  Create the `rhbk` project and choose *Automatic* update approval.
 
 image::setup/rhbk-operator-opts.png[]
 
-* Click `Install`.
+* Click *Install*.
 
-Once installed, the `Keycloak Operator` should appear in the list of installed operators, accessible from the `Operators` menu under `Installed Operators`.
+Once installed, the `Keycloak Operator` should appear in the list of installed operators, accessible from the `Operators` menu under *Installed Operators*.
 
 image::setup/rhbk-operator-installed.png[]
 
-Keycloak requires specific prerequisites (unless it is initiated with `start-dev`) that we will proceed to install and configure.
+Keycloak requires certain prerequisites (unless started in `start-dev` mode), which we will now install and configure.
 
-Let's set up the database that Keycloak will rely on. In this workshop, we'll opt for a PostgreSQL database installation.
+Let’s set up the database that Keycloak will rely on. For this workshop, we’ll use a PostgreSQL database.
 
 * Deploy the database instance:
 
@@ -72,9 +74,10 @@ oc -n rhbk create secret generic keycloak-db-secret \
   --from-literal=password=keycloak
 ----
 
-NOTE: The YAML file already includes the database's `keycloak` username and password, which is adequate for a workshop. In a production environment, it's essential to securely define these fields, and it's recommended to store them in a secret.
+NOTE: The YAML file already includes the `keycloak` username and password for the database, which is sufficient for workshop purposes.
+In a production environment, you must securely define these fields and store them in a secret.
 
-* Deploy the Red Hat Build of Keycloak Instance:
+* Deploy the Red Hat build of Keycloak instance:
 
 [.lines_space]
 [.console-input]
@@ -83,11 +86,13 @@ NOTE: The YAML file already includes the database's `keycloak` username and pass
 oc -n rhbk apply -f https://raw.githubusercontent.com/aolle/rhbk-workshop/main/code/install/rhbk.yaml
 ----
 
-NOTE: For the workshop, the Keycloak instance has been configured with plain HTTP enabled, and strict hostname resolution has been disabled. In production environments, it is necessary to configure TLS and set the hostname according to the specific requirements.
+NOTE: For this workshop, the Keycloak instance is configured with plain HTTP enabled, and strict hostname resolution disabled.
+In production, TLS configuration and proper hostname setup are required.
 
-After deploying and ensuring the Keycloak instance is running successfully, we can access the administration console. The default credentials are generated randomly during the deployment. To retrieve them, we need to check the generated secrets as follows:
+After deploying and confirming that the Keycloak instance is running successfully, you can access the administration console.
+The default credentials are randomly generated during deployment. Retrieve them using the following commands:
 
-* Obtain the secrets and decode them.
+* Obtain and decode the generated secrets:
 
 [.lines_space]
 [.console-input]
@@ -97,101 +102,47 @@ oc -n rhbk get secret example-keycloak-initial-admin -o jsonpath='{.data.usernam
 oc -n rhbk get secret example-keycloak-initial-admin -o jsonpath='{.data.password}' | base64 --decode
 ----
 
-NOTE: In production environments, it is advisable to change the randomly generated default credentials and enable multi-factor verification for enhanced security.
+NOTE: In production environments, it is strongly recommended to change the default credentials and enable multi-factor authentication for enhanced security.
 
-* Try accessing the administration console using the provided credentials.
+* Access the administration console using the retrieved credentials.
 
 image::setup/admin-console.png[]
 
-////
-Create the TLS certificate and key:
-
-[.lines_space]
-[.console-input]
-[source,bash, subs="+macros,+attributes"]
-----
-openssl req -subj '/CN=keycloak.example.com/O=Test Keycloak./C=ES' -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
-
-oc -n rhbk create secret tls example-tls-secret --cert certificate.pem --key key.pem
-----
-
-Now, we will deploy an instance of Keycloak using the operator. Follow the steps below:
-
-* From the Administrator perspective, click on `Operators`, then select `Installed Operators`. Make sure to select `rhbk` project. Select `Keycloak Operator`.
-
-image::setup/rhbk-operator.png[]
-
-* Click `Create instance` of the Keycloak tile.
-
-image::setup/create-instance.png[]
-
-* In the `http` section, specify the name of the secret created earlier in the `tlsSecret` field.
-
-image::setup/tls-secret-field.png[]
-
-* In the `hostname` section, specify the hostname of the certificate created earlier in the `hostname` field.
-
-* In the `db` section, specify the database key and name secret created earlier in the `usernameSecret` field.
-
-image::setup/username-secret.png[]
-
-* Do the same in the `passwordSecret` field.
-
-image::setup/password-secret.png[]
-
-* Click `Create`.
-////
-
-////
-image::setup/operatorhub.png[]
-
-
-[#deploy-templates]
-=== Deploying Red Hat build of Keycloak on OpenShift using the templates
-
-
-[.lines_space]
-[.console-input]
-[source,bash, subs="+macros,+attributes"]
-----
-oc policy add-role-to-user view -z default -n sso
-----
-////
-
 [#deploy-ipa]
-== 1.3 Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift
+== Deploying an Identity Management (IdM/FreeIPA) on Red Hat OpenShift
 
-This section explains how to install FreeIPA, an Identity Management (IdM) solution that combines Linux, 389 Directory Server, MIT Kerberos, NTP, DNS and Dogtag.
+This section explains how to install FreeIPA, an Identity Management (IdM) solution that combines Linux, 389 Directory Server, MIT Kerberos, NTP, DNS, and Dogtag Certificate System.
 
 https://www.freeipa.org/page/About
 
-FreeIPA is the upstream version of Red Hat Identity Management.
+FreeIPA is the upstream project of Red Hat Identity Management.
 
-Later on, we will see how we can integrate Red Hat build of Keycloak with IdM/FreeIPA.
+Later in this workshop, we will integrate Red Hat build of Keycloak with IdM/FreeIPA.
 
-To get started, stay logged in into your Red Hat OpenShift platform, and for convenience, select the `kc` project that has been created previously. Follow the steps below for deploying a FreeIPA instance on top of Red Hat OpenShift.
+To get started, remain logged in to your Red Hat OpenShift cluster and, for convenience, select the previously created `kc` project.
+Follow the steps below to deploy a FreeIPA instance on Red Hat OpenShift.
 
 [.lines_space]
 [.console-input]
 [source,bash, subs="+macros,+attributes"]
 ----
-# export the image that we are going to deploy
+# Export the image to be deployed
 export IMG=quay.io/freeipa/freeipa-openshift-container:4.9.8
 export IMG_BASE=${IMG}
 
-# clone the repository and deploy the roles and scc
-# if preferred, a remote build could be performed instead of cloning the repository
+# Clone the repository and deploy the roles and SCC
+# Alternatively, a remote build can be performed instead of cloning the repository
 git clone https://github.com/freeipa/freeipa-openshift-container.git
 cd freeipa-openshift-container/
 kustomize build deploy/admin | oc create -f -
 
-# create the ocp template and deploy it
+# Create the OpenShift template and deploy it
 make template-create
 make template-new-app
 ----
 
-Write down the `IPA_ADMIN_PASSWORD` and `IPA_DM_PASSWORD` displayed on the terminal; we will need it later.
+Take note of the `IPA_ADMIN_PASSWORD` and `IPA_DM_PASSWORD` values displayed in the terminal; they will be required later.
 
-Open the FreeIPA administration console to verify that the access and credentials are working properly.
+Open the FreeIPA administration console to verify that access and credentials are functioning correctly.
 
 image::setup/freeIPAconsole.png[]

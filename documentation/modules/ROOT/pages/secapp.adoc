@@ -4,11 +4,11 @@ include::_attributes.adoc[]
 [#presetup]
 == Configuration
 
-Before proceeding with the next sections, we need to configure the realm, roles and users in our Red Hat build of Keycloak instance.
+Before proceeding with the next sections, we need to configure the realm, roles, and users in our Red Hat build of Keycloak instance.
 
-* Open a browser window and log in to the Red Hat build of Keycloak administration web console.
+* Open a browser window and log in to the Red Hat build of Keycloak administration console.
 
-* Create the `demo` realm. Click on the `master` realm dropdown menu, click `Create Realm`.
+* Create the `demo` realm. Click the `master` realm dropdown menu and select `Create Realm`.
 
 image::authservices/create-realm.png[]
 
@@ -24,29 +24,29 @@ image::authservices/groups.png[]
 
 image::authservices/groups2.png[]
 
-* Set `staff` as the group name, and click `Create`.
+* Set `staff` as the group name and click `Create`.
 
 image::authservices/groups3.png[]
 
-* Create the child group named `Personal staff`. Click on the kebab button of the `staff` group and click `Create child group`.
+* Create the child group named `Personal staff`. Click on the kebab menu (⋮) of the `staff` group and select `Create child group`.
 
 image::authservices/groups4.png[]
 
-* Set `Personal staff` as the name, and click `Create`.
+* Set `Personal staff` as the name and click `Create`.
 
 image::authservices/groups5.png[]
 
-* Create the role `vet`. Click on `Realm roles`, then `Create role`.
+* Create the `vet` role. Click on `Realm roles`, then `Create role`.
 
 image::authservices/roles.png[]
 
 image::authservices/roles2.png[]
 
-* Set the Role name, and click `Save`.
+* Set the role name and click `Save`.
 
 image::authservices/roles3.png[]
 
-* Repeat the same steps for creating a role named `assistant`.
+* Repeat the same steps to create a role named `assistant`.
 
 image::authservices/roles4.png[]
 
@@ -56,11 +56,11 @@ image::authservices/users.png[]
 
 image::authservices/users2.png[]
 
-* Set the username, and click `Create`.
+* Set the username and click `Create`.
 
 image::authservices/users3.png[]
 
-* Open the `Credentials` tab and set the password for the user. Make sure to set `Temporary` to `OFF` before setting the password.
+* Open the `Credentials` tab and set a password for the user. Ensure that `Temporary` is set to `OFF` before setting the password.
 
 image::authservices/users4.png[]
 
@@ -80,14 +80,14 @@ image::authservices/users9.png[]
 
 image::authservices/users10.png[]
 
-* Repeat the same steps for creating a user named `elisabeth` but assign the `assistant` role. Also, remember to incude the user in the `Personal staff` group.
+* Repeat the same steps to create a user named `elisabeth`, assigning the `assistant` role and adding the user to the `Personal staff` group.
 
 [#quarkus-apps]
 == Securing Web Applications
 
-The sample application that we will use in this section is the `Quarkus Petclinic project`.
+The sample application used in this section is the `Quarkus Petclinic` project.
 
-In this tutorial, we will work with a version that has been modified for the tutorial.
+In this tutorial, we will work with a version that has been modified for demonstration purposes.
 
 The repository for this modified version is:
 
@@ -117,13 +117,13 @@ image::authservices/petclinic-main.png[]
 
 Before securing the application, let's configure a new client in our Red Hat build of Keycloak realm.
 
-* Open a browser window and log in to the Red Hat build of Keycloak administration web console.
+* Open a browser window and log in to the Red Hat build of Keycloak administration console.
 
-* Select our `demo` realm and click `Clients`. Click `Create client`.
+* Select the `demo` realm and click `Clients`. Click `Create client`.
 
 image::authservices/client.png[]
 
-* Set `quarkus-petclinic` as `Client ID`. Click `Next` until `Save`.
+* Set `quarkus-petclinic` as the `Client ID`. Click `Next` until `Save`.
 
 image::authservices/client2.png[]
 
@@ -135,64 +135,70 @@ image::authservices/client2.png[]
 
 image::authservices/client3.png[]
 
-At this point, we have the `demo` realm with the `quarkus-petclinic` client; additionally, we created two roles and two users: the user `angel` that has the `vet` role and the user `elisabeth` that has the role `assistant`.
+At this point, we have the `demo` realm with the `quarkus-petclinic` client. We also created two roles and two users:
+the user `angel` with the `vet` role, and the user `elisabeth` with the `assistant` role.
 
-* The authorization granularity that we want to configure based on our application is the following:
-** Any user that belongs to the `demo` realm, like `elisabeth`, can browse the application except the `VETERINARIANS` resource.
-** Only the users with the role `vet` can view the `VETERINARIANS` resource (which has the `/vets.html` context).
-** Any other user access outside the realm will be rejected.
+* The authorization granularity we want to configure in our application is as follows:
+** Any user that belongs to the `demo` realm, like `elisabeth`, can browse the application except for the `VETERINARIANS` resource.
+** Only users with the `vet` role can view the `VETERINARIANS` resource (which corresponds to the `/vets.html` path).
+** Any user outside the realm will be denied access.
 
 image::authservices/quarkus-petclinic-menu.png[]
 
 Let's configure our client authorization.
 
-* Open a browser window and log in to the Red Hat build of Keycloak administration web console. Browse to our `quarkus-petclinic` client and click the `Authorization` and then `Policies` tabs.
+* Open a browser window and log in to the Red Hat build of Keycloak administration console.
+  Browse to the `quarkus-petclinic` client and click the `Authorization` tab, then the `Policies` tab.
 
 image::authservices/client4.png[]
 
-* Click `Create policy`, select `Group`.
+* Click `Create policy` and select `Group`.
 
 image::authservices/client5.png[]
 
-* Set `Default Group Policy` as the `Name`. Add the `staff` group to the `Groups` list. Make sure that the `Logic` is set to `Positive` and `Extend to Children` is checked (to enable the checkbox, you may need to click `Save` first). Finally, click `Save`.
+* Set `Default Group Policy` as the `Name`.
+  Add the `staff` group to the `Groups` list.
+  Ensure that the `Logic` is set to `Positive` and that `Extend to Children` is checked (to enable it, you may need to click `Save` first).
+  Finally, click `Save`.
 
 image::authservices/client6.png[]
 
-* Come back, select the `Resources` tab and click `Create Permission` for the `Default Resource`.
+* Go back, select the `Resources` tab, and click `Create permission` for the `Default Resource`.
 
 image::authservices/client7.png[]
 
-* Set `Default Resource Permission` as `Name` and select `Default Resource` as `Resources`. Add the recently created `Default Group Policy` policy. Click `Save`.
+* Set `Default Resource Permission` as the `Name` and select `Default Resource` as the `Resource`.
+  Add the previously created `Default Group Policy` and click `Save`.
 
 image::authservices/client8.png[]
 
-* Come back again, select the `Resources` tab and create a new resource by clicking on `Create resource`.
+* Go back again, select the `Resources` tab, and click `Create resource`.
 
 image::authservices/client9.png[]
 
-* Set `Vets Resource` as `Name` and `Display name`, and `/vets.html` as URI. Click `Save`.
+* Set `Vets Resource` as both the `Name` and `Display name`, and `/vets.html` as the `URI`. Click `Save`.
 
 image::authservices/client10.png[]
 
-* Browse to `Authorization` and `Policies` tabs. Click on `Create Policy`.
+* Navigate to the `Authorization` → `Policies` tab and click `Create policy`.
 
 image::authservices/client11.png[]
 
-* Select `Role`
+* Select `Role`.
 
 image::authservices/client12.png[]
 
-* Set `Vet Role Policy` as the Name, `vet` as `Realm Roles`, and check required. Click `Save`.
+* Set `Vet Role Policy` as the `Name`, select `vet` under `Realm Roles`, check `Required`, and click `Save`.
 
 image::authservices/client13.png[]
 
-* Browse to the `Authorization` and `Resources` tabs.
+* Navigate to the `Authorization` → `Resources` tab.
 
-* Click on `Create Permission` for the `Vets Resource`.
+* Click `Create permission` for the `Vets Resource`.
 
 image::authservices/client14.png[]
 
-* Set `Vets Resource Permission` as `Name`. And apply the `Vet Role Policy`. Click `Save`.
+* Set `Vets Resource Permission` as the `Name` and apply the `Vet Role Policy`. Click `Save`.
 
 image::authservices/client16.png[]
 
@@ -200,11 +206,12 @@ At this point, the Red Hat build of Keycloak client is properly configured.
 
 Let's configure the application side.
 
-* Open a browser window and log in to the Red Hat build of Keycloak administration web console. Browse to our `quarkus-petclinic` client and click the `Credentials` tab. Write down the `Secret` value, we will need it soon.
+* In the Keycloak administration console, browse to the `quarkus-petclinic` client and click the `Credentials` tab.
+  Write down the `Secret` value — you will need it soon.
 
 image::authservices/client15.png[]
 
-* Export the client secret
+* Export the client secret:
 
 [.lines_space]
 [.console-input]
@@ -219,17 +226,17 @@ export KEYCLOAK_CLIENT_SECRET=<the secret>
 [.console-input]
 [source,text, subs="+macros,+attributes"]
 ----
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-oidc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-keycloak-authorization</artifactId>
-    </dependency>
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-oidc</artifactId>
+</dependency>
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-keycloak-authorization</artifactId>
+</dependency>
 ----
 
-* Add the following configuration to the `application.properties` file of the application, as shown below:
+* Add the following configuration to the application's `application.properties` file:
 
 [.lines_space]
 [.console-input]
@@ -250,14 +257,14 @@ quarkus.oidc.webapp.roles.source=${quarkus.oidc.roles.source}
 quarkus.keycloak.policy-enforcer.enable=true
 ----
 
-* Redeploy and test the application accesses:
+* Redeploy and test the application access:
 ** Open a new incognito browser session.
-** Browse to the context root of the Quarkus Petclinic application. The request will be redirected to the Red Hat Single Sign-On login page. Here, we checked that the anonymous access to the application is forbidden.
+** Browse to the context root of the Quarkus Petclinic application. The request should be redirected to the Red Hat Single Sign-On login page — confirming that anonymous access is blocked.
 ** Log in as `elisabeth`. The request will be redirected to the application after a successful login.
-** Browse through the application, try to access the VETERINARIANS section. The access should be denied, as `elisabeth` has the `assistant` role and the access is restricted to the `vet` role. An error will be shown on the application page.
-** Close the browser and open a new one incognito session.
-** Visit the context root of the application again.
-** Login as `angel`.
-** Browse through the application, try to access the VETERINARIANS section. The access should be granted, as `angel` has the `vet` role.
+** Browse the application and try to access the *VETERINARIANS* section. Access should be denied since `elisabeth` has the `assistant` role and this resource is restricted to users with the `vet` role.
+** Close the browser and open a new incognito session.
+** Visit the context root again.
+** Log in as `angel`.
+** Browse the application and try to access the *VETERINARIANS* section. This time, access should be granted since `angel` has the `vet` role.
 
-NOTE: A complete OIDC working Petclinic Quarkus application is available at `rhbk-oidc-22` branch.
+NOTE: A complete OIDC-enabled Quarkus Petclinic application is available in the `rhbk-oidc-22` branch.

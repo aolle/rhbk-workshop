@@ -1,0 +1,6 @@
+= Migrating from Red Hat Single Sign-On 7.6 to Red Hat Build of Keycloak
+include::_attributes.adoc[]
+
+[#setup]
+== Lab Setup for Migration
+
